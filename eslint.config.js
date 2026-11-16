@@ -1,5 +1,7 @@
 // @ts-check
 import js from "@eslint/js";
+import reactHooks from "eslint-plugin-react-hooks";
+import reactRefresh from "eslint-plugin-react-refresh";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
@@ -69,10 +71,23 @@ export default tseslint.config(
               group: ["**/shared/src/**", "**/server/**", "@health-tracker/*/src/**"],
               message: "Import shared code as '@health-tracker/shared'; never import server code.",
             },
+            {
+              group: ["../*", "../**"],
+              message: "Use the '@/' alias for imports outside this folder, e.g. '@/components/Foo'.",
+            },
           ],
         },
       ],
     },
+  },
+
+  {
+    files: ["client/src/**/*.{ts,tsx}"],
+    ...reactHooks.configs.flat["recommended-latest"],
+  },
+  {
+    files: ["client/src/**/*.{ts,tsx}"],
+    ...reactRefresh.configs.vite,
   },
 
   {

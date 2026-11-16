@@ -11,7 +11,7 @@ A web app with two logs (workouts and life events: alcohol, elevation, illness) 
 
 ## Environment
 
-- Node 22 via nvm. Run `nvm use` first: the system `node` is v10 and will not work.
+- Node 22 via nvm (pinned in `.nvmrc`). If `node -v` is older, run `nvm use` before any npm command.
 - npm workspaces only. Do not add pnpm, yarn or Turborepo without asking.
 - TypeScript is pinned to 6.0.x because typescript-eslint does not support TypeScript 7 yet. Do not upgrade it until typescript-eslint does.
 
@@ -20,7 +20,8 @@ A web app with two logs (workouts and life events: alcohol, elevation, illness) 
 | Command | What it does |
 | --- | --- |
 | `npm install` | Install all workspaces |
-| `npm run build` | `tsc -b`: builds shared, then server and client |
+| `npm run dev` | Client dev server (Vite) on http://localhost:5173 |
+| `npm run build` | `tsc -b` (type-checks and builds shared, server, client), then `vite build` for the client |
 | `npm run typecheck` | Type-check everything without emitting |
 | `npm run clean` | Remove build output |
 | `npm run lint` | ESLint with type-aware typescript-eslint rules |
@@ -36,6 +37,8 @@ Run `npm run lint` and `npm run build` (and tests, once they exist) before repor
 
 Packages import shared code as `@health-tracker/shared`. Never import across packages with relative paths.
 
+Inside the client, import from `client/src` with the `@/` alias (`@/components/WorkoutForm`). Use `./` only for files in the same folder; ESLint rejects `../` imports. The alias is defined in both `client/tsconfig.app.json` (`paths`) and `client/vite.config.ts` (`resolve.alias`); change both together.
+
 ## Rules
 
 - **Types come from Zod.** Define the schema in `shared`, derive the type with `z.infer`. Do not hand-write duplicate interfaces.
@@ -44,6 +47,8 @@ Packages import shared code as `@health-tracker/shared`. Never import across pac
 - **The LLM only writes advice.** Signals and readiness are computed by pure, unit-tested TypeScript functions. The LLM call runs on the server only, its output is validated with Zod, and the API key never reaches the client.
 - **Hard rules win.** Fever or chest symptoms always means "rest", whatever the model says. Keep a rules-only fallback when the LLM call fails.
 - **Health-adjacent wording.** Keep advice conservative and keep the "not medical advice" note on the Today screen.
+- **HeroUI is v3.** It needs no provider, uses compound components (`Card.Header`, `Select.Item`) and React Aria events (`onPress`, not `onClick`). Its styles come from `@import "@heroui/styles"` in `client/src/index.css`. Check the installed types rather than v2 docs or examples.
+- **Shared in the client.** Vite aliases `@health-tracker/shared` to `shared/src`, so the dev server picks up shared changes without a rebuild. Type-checking still goes through the built `shared` package.
 - **Client data flow.** All fetching goes through TanStack Query hooks. Any workout or event mutation invalidates the advice query.
 - TypeScript is strict; do not use `any` or `@ts-ignore` to get past errors.
 
