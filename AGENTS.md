@@ -24,6 +24,9 @@ A web app with two logs (workouts and life events: alcohol, elevation, illness) 
 | `npm run build` | `tsc -b` (type-checks and builds shared, server, client), then `vite build` for the client |
 | `npm run typecheck` | Type-check everything without emitting |
 | `npm run clean` | Remove build output |
+| `npm run db:start` / `db:stop` | Start or stop this project's own Postgres (data in `.postgres-data/`, port 5433) |
+| `npm run db:generate` | Generate a migration from `server/src/db/schema.ts` |
+| `npm run db:migrate` | Apply pending migrations |
 | `npm run lint` | ESLint with type-aware typescript-eslint rules |
 | `npm run lint:fix` | Auto-fix what ESLint can |
 
@@ -32,7 +35,7 @@ Run `npm run lint` and `npm run build` (and tests, once they exist) before repor
 ## Layout
 
 - `shared/`: Zod schemas and inferred types (Workout, Event, Advice, Signals). The single source of truth for data shapes.
-- `server/`: Node + Express API, Drizzle + SQLite, Clerk auth, LLM call.
+- `server/`: Node + Express API, Drizzle + PostgreSQL (`pg` driver), Clerk auth, LLM call.
 - `client/`: Vite + React + Tailwind + HeroUI, TanStack Query for all fetching.
 
 Packages import shared code as `@health-tracker/shared`. Never import across packages with relative paths.
@@ -50,6 +53,8 @@ Inside the client, import from `client/src` with the `@/` alias (`@/components/W
 - **HeroUI is v3.** It needs no provider, uses compound components (`Card.Header`, `Select.Item`) and React Aria events (`onPress`, not `onClick`). Its styles come from `@import "@heroui/styles"` in `client/src/index.css`. Check the installed types rather than v2 docs or examples.
 - **Shared in dev.** `shared/package.json` has a `development` export pointing at `src/index.ts`. Vite uses it automatically and the server's dev script passes `--conditions=development`, so neither needs `shared` built. Type-checking and production builds use the built `dist`.
 - **Server and shared run as TypeScript under Node.** Node 22 strips types itself (no tsx/ts-node). So in `server` and `shared`: write relative imports with a `.ts` extension (`./app.ts`; `tsc` rewrites them to `.js`), and use only erasable syntax (no `enum`, `namespace` or constructor parameter properties; `erasableSyntaxOnly` enforces this).
+- **Database changes go through migrations.** Edit `server/src/db/schema.ts`, run `npm run db:generate`, review the SQL in `server/drizzle/`, then `npm run db:migrate`. Commit the generated files; never edit an applied migration or change the database by hand. npm swallows extra flags on root scripts, so for drizzle-kit options run `npx drizzle-kit ...` inside `server/`.
+- **Database connection.** Use the `db` from `server/src/db/client.ts`; don't create other pools. It falls back to the local dev database when `DATABASE_URL` is unset.
 - **Server errors.** Throw or reject from handlers and let `server/src/middleware/error-handler.ts` respond. Express 5 forwards async errors itself, so no try/catch-and-next boilerplate. Unexpected errors return a generic 500; never send stack traces or internal messages to the client.
 - **Client data flow.** All fetching goes through TanStack Query hooks. Any workout or event mutation invalidates the advice query.
 - TypeScript is strict; do not use `any` or `@ts-ignore` to get past errors.

@@ -4,5 +4,5 @@ dist/
 .env
 .env.*
 !.env.example
-*.db
+.postgres-data/
 .DS_Store

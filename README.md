@@ -29,12 +29,12 @@ Not in the MVP: wearable integrations, set and rep tracking, GPS elevation, a na
 
 ## Tech stack
 
-| Area | Choice |
-| --- | --- |
-| Client | Vite, React, Tailwind, HeroUI, TanStack Query |
-| Server | Node, Express, Drizzle ORM, SQLite |
-| Auth | Clerk |
-| Shared | Zod schemas and inferred TypeScript types |
+| Area    | Choice                                                                       |
+| ------- | ---------------------------------------------------------------------------- |
+| Client  | Vite, React, Tailwind, HeroUI, TanStack Query                                |
+| Server  | Node, Express, Drizzle ORM, PostgreSQL                                       |
+| Auth    | Clerk                                                                        |
+| Shared  | Zod schemas and inferred TypeScript types                                    |
 | Tooling | npm workspaces, TypeScript project references, ESLint with typescript-eslint |
 
 ## Project structure
@@ -50,39 +50,47 @@ The client and server import shared code as `@health-tracker/shared`, so data sh
 
 ## Getting started
 
-Requires Node 22 (a `.nvmrc` is included).
+Requires Node 22 (a `.nvmrc` is included) and PostgreSQL installed locally (`initdb`, `pg_ctl` and `psql` on your PATH).
 
 ```bash
 nvm use
 npm install
-npm run build
+npm run db:start     # first run creates a local Postgres in .postgres-data/ on port 5433
+npm run db:migrate
+npm run dev
 ```
+
+The project runs its own Postgres server on port 5433, so it doesn't clash with another Postgres on the default port. The server connects to `postgres://postgres@localhost:5433/health_tracker` unless `DATABASE_URL` is set.
 
 ### Scripts
 
 Run from the repo root:
 
-| Command | What it does |
-| --- | --- |
-| `npm run dev` | Start the API (http://localhost:3001) and the client (http://localhost:5173) together |
-| `npm run build` | Type-check and build all packages, then bundle the client with Vite |
-| `npm run typecheck` | Type-check everything without writing output |
-| `npm run lint` | Run ESLint across all packages |
-| `npm run lint:fix` | Fix what ESLint can fix automatically |
-| `npm run clean` | Remove build output |
+| Command             | What it does                                                                          |
+| ------------------- | ------------------------------------------------------------------------------------- |
+| `npm run dev`       | Start the API (http://localhost:3001) and the client (http://localhost:5173) together |
+| `npm run build`     | Type-check and build all packages, then bundle the client with Vite                   |
+| `npm run typecheck` | Type-check everything without writing output                                          |
+| `npm run lint`      | Run ESLint across all packages                                                        |
+| `npm run lint:fix`  | Fix what ESLint can fix automatically                                                 |
+| `npm run clean`     | Remove build output                                                                   |
+| `npm run db:start`  | Start the local Postgres server, creating it and the database on first run            |
+| `npm run db:stop`   | Stop the local Postgres server                                                        |
+| `npm run db:generate` | Create a migration from changes in `server/src/db/schema.ts`                        |
+| `npm run db:migrate`  | Apply pending migrations                                                            |
 
-Both reload on save, and Ctrl+C stops both. The API has one endpoint so far: `GET /health`.
+Both reload on save, and Ctrl+C stops both. The API has one endpoint so far: `GET /health`, which returns 503 if the database is unreachable.
 
 ## Roadmap
 
-| Week | Epic | Status |
-| --- | --- | --- |
-| 1 | Foundation and authentication | In progress (repo, client and server scaffolds done) |
-| 2 | Workout logging | Not started |
-| 3 | Event logging | Not started |
-| 4 | Rules engine | Not started |
-| 5 | AI advice and Today screen | Not started |
-| 6 | Polish and deploy | Not started |
+| Week | Epic                          | Status                                               |
+| ---- | ----------------------------- | ---------------------------------------------------- |
+| 1    | Foundation and authentication | In progress (repo, client and server scaffolds done) |
+| 2    | Workout logging               | Not started                                          |
+| 3    | Event logging                 | Not started                                          |
+| 4    | Rules engine                  | Not started                                          |
+| 5    | AI advice and Today screen    | Not started                                          |
+| 6    | Polish and deploy             | Not started                                          |
 
 ## Contributing
 

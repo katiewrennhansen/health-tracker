@@ -15,7 +15,11 @@ export default tseslint.config(
   {
     languageOptions: {
       parserOptions: {
-        projectService: true,
+        projectService: {
+          // Tool configs outside any tsconfig's `include`, type-checked with the server's settings.
+          allowDefaultProject: ["server/drizzle.config.ts"],
+          defaultProject: "server/tsconfig.json",
+        },
         tsconfigRootDir: import.meta.dirname,
       },
     },

@@ -16,7 +16,11 @@
     "clean": "tsc -b --clean",
     "typecheck": "tsc -b --noEmit",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "db:start": "./scripts/db-start.sh",
+    "db:stop": "pg_ctl -D .postgres-data stop",
+    "db:generate": "npm run db:generate -w @health-tracker/server",
+    "db:migrate": "npm run db:migrate -w @health-tracker/server"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
