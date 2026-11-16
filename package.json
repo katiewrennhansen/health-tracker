@@ -11,7 +11,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "dev": "npm run dev -w @health-tracker/client",
+    "dev": "concurrently --names server,client --prefix-colors blue,magenta \"npm run dev -w @health-tracker/server\" \"npm run dev -w @health-tracker/client\"",
     "build": "tsc -b && npm run build -w @health-tracker/client",
     "clean": "tsc -b --clean",
     "typecheck": "tsc -b --noEmit",
@@ -21,6 +21,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^22.20.5",
+    "concurrently": "^10.0.7",
     "eslint": "^10.15.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.8",

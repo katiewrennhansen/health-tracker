@@ -9,8 +9,6 @@ export default defineConfig({
     alias: {
       // `@/` points at client/src; keep in sync with `paths` in tsconfig.app.json.
       "@": fileURLToPath(new URL("./src", import.meta.url)),
-      // Bundle shared from source so `npm run dev` picks up changes without rebuilding it.
-      "@health-tracker/shared": fileURLToPath(new URL("../shared/src/index.ts", import.meta.url)),
     },
   },
 });

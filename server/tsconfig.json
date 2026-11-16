@@ -1,6 +1,12 @@
 {
   "extends": "../tsconfig.base.json",
-  "compilerOptions": { "rootDir": "src", "outDir": "dist", "types": ["node"] },
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "types": ["node"],
+    "rewriteRelativeImportExtensions": true,
+    "erasableSyntaxOnly": true
+  },
   "include": ["src"],
   "references": [{ "path": "../shared" }]
 }

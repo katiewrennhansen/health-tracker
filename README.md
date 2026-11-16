@@ -64,20 +64,20 @@ Run from the repo root:
 
 | Command | What it does |
 | --- | --- |
-| `npm run dev` | Start the client dev server at http://localhost:5173 |
+| `npm run dev` | Start the API (http://localhost:3001) and the client (http://localhost:5173) together |
 | `npm run build` | Type-check and build all packages, then bundle the client with Vite |
 | `npm run typecheck` | Type-check everything without writing output |
 | `npm run lint` | Run ESLint across all packages |
 | `npm run lint:fix` | Fix what ESLint can fix automatically |
 | `npm run clean` | Remove build output |
 
-`npm run dev` starts only the client for now; the API server joins it in F-3.
+Both reload on save, and Ctrl+C stops both. The API has one endpoint so far: `GET /health`.
 
 ## Roadmap
 
 | Week | Epic | Status |
 | --- | --- | --- |
-| 1 | Foundation and authentication | In progress (repo setup and client scaffold done) |
+| 1 | Foundation and authentication | In progress (repo, client and server scaffolds done) |
 | 2 | Workout logging | Not started |
 | 3 | Event logging | Not started |
 | 4 | Rules engine | Not started |

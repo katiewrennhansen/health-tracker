@@ -20,7 +20,7 @@ A web app with two logs (workouts and life events: alcohol, elevation, illness) 
 | Command | What it does |
 | --- | --- |
 | `npm install` | Install all workspaces |
-| `npm run dev` | Client dev server (Vite) on http://localhost:5173 |
+| `npm run dev` | API server on http://localhost:3001 and client (Vite) on http://localhost:5173, both reloading on save |
 | `npm run build` | `tsc -b` (type-checks and builds shared, server, client), then `vite build` for the client |
 | `npm run typecheck` | Type-check everything without emitting |
 | `npm run clean` | Remove build output |
@@ -48,7 +48,9 @@ Inside the client, import from `client/src` with the `@/` alias (`@/components/W
 - **Hard rules win.** Fever or chest symptoms always means "rest", whatever the model says. Keep a rules-only fallback when the LLM call fails.
 - **Health-adjacent wording.** Keep advice conservative and keep the "not medical advice" note on the Today screen.
 - **HeroUI is v3.** It needs no provider, uses compound components (`Card.Header`, `Select.Item`) and React Aria events (`onPress`, not `onClick`). Its styles come from `@import "@heroui/styles"` in `client/src/index.css`. Check the installed types rather than v2 docs or examples.
-- **Shared in the client.** Vite aliases `@health-tracker/shared` to `shared/src`, so the dev server picks up shared changes without a rebuild. Type-checking still goes through the built `shared` package.
+- **Shared in dev.** `shared/package.json` has a `development` export pointing at `src/index.ts`. Vite uses it automatically and the server's dev script passes `--conditions=development`, so neither needs `shared` built. Type-checking and production builds use the built `dist`.
+- **Server and shared run as TypeScript under Node.** Node 22 strips types itself (no tsx/ts-node). So in `server` and `shared`: write relative imports with a `.ts` extension (`./app.ts`; `tsc` rewrites them to `.js`), and use only erasable syntax (no `enum`, `namespace` or constructor parameter properties; `erasableSyntaxOnly` enforces this).
+- **Server errors.** Throw or reject from handlers and let `server/src/middleware/error-handler.ts` respond. Express 5 forwards async errors itself, so no try/catch-and-next boilerplate. Unexpected errors return a generic 500; never send stack traces or internal messages to the client.
 - **Client data flow.** All fetching goes through TanStack Query hooks. Any workout or event mutation invalidates the advice query.
 - TypeScript is strict; do not use `any` or `@ts-ignore` to get past errors.
 
