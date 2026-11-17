@@ -1,5 +1,5 @@
-import { Link } from "@tanstack/react-router";
-import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/react";
+import { Show, UserButton } from "@clerk/react";
+import { NavLink } from "react-router";
 
 const navItems = [
   { to: "/", label: "Today" },
@@ -8,27 +8,27 @@ const navItems = [
 
 export function Navbar() {
   return (
-    <nav aria-label="Main">
-      <ul className="flex flex-wrap gap-x-5 gap-y-1 text-sm">
-        <Show when="signed-out">
-          <SignInButton />
-          <SignUpButton />
-        </Show>
-        <Show when="signed-in">
-          <UserButton />
-        </Show>
-        {navItems.map((item) => (
-          <li key={item.to}>
-            <Link
-              to={item.to}
-              activeOptions={{ exact: true }}
-              className="text-muted hover:text-foreground data-[status=active]:font-semibold data-[status=active]:text-accent"
-            >
-              {item.label}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <Show when="signed-in">
+      <div className="flex items-center justify-between gap-4">
+        <nav aria-label="Main">
+          <ul className="flex flex-wrap gap-x-5 gap-y-1 text-sm">
+            {navItems.map((item) => (
+              <li key={item.to}>
+                <NavLink
+                  to={item.to}
+                  end
+                  className={({ isActive }) =>
+                    isActive ? "font-semibold text-accent" : "text-muted hover:text-foreground"
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <UserButton />
+      </div>
+    </Show>
   );
 }

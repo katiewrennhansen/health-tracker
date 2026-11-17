@@ -36,7 +36,7 @@ Run `npm run lint` and `npm run build` (and tests, once they exist) before repor
 
 - `shared/`: Zod schemas and inferred types (Workout, Event, Advice, Signals). The single source of truth for data shapes.
 - `server/`: Node + Express API, Drizzle + PostgreSQL (`pg` driver), Clerk auth, LLM call.
-- `client/`: Vite + React + Tailwind + HeroUI, TanStack Query for all fetching.
+- `client/`: Vite + React + Tailwind + HeroUI, React Router for routes, TanStack Query for all fetching.
 
 Packages import shared code as `@health-tracker/shared`. Never import across packages with relative paths.
 
@@ -56,6 +56,7 @@ Inside the client, import from `client/src` with the `@/` alias (`@/components/W
 - **Database changes go through migrations.** Edit `server/src/db/schema.ts`, run `npm run db:generate`, review the SQL in `server/drizzle/`, then `npm run db:migrate`. Commit the generated files; never edit an applied migration or change the database by hand. npm swallows extra flags on root scripts, so for drizzle-kit options run `npx drizzle-kit ...` inside `server/`.
 - **Database connection.** Use the `db` from `server/src/db/client.ts`; don't create other pools. It falls back to the local dev database when `DATABASE_URL` is unset.
 - **Server errors.** Throw or reject from handlers and let `server/src/middleware/error-handler.ts` respond. Express 5 forwards async errors itself, so no try/catch-and-next boilerplate. Unexpected errors return a generic 500; never send stack traces or internal messages to the client.
+- **Client routes and auth.** Routes live in `client/src/router.tsx` (React Router 8, `createBrowserRouter`; import from `react-router`, and `RouterProvider` from `react-router/dom`). New app pages go under the `RequireSignedIn` layout route, which sends signed-out users to `/sign-up`; sign-up/sign-in sit under `RequireSignedOut` (both in `components/RouteGuards.tsx`, using Clerk's `useAuth()`). There is no full-page loading screen: guards render nothing until Clerk has loaded, and actions show loading on the control that started them. Clerk reads its key from `VITE_CLERK_PUBLISHABLE_KEY` in `client/.env`.
 - **Client data flow.** All fetching goes through TanStack Query hooks. Any workout or event mutation invalidates the advice query.
 - TypeScript is strict; do not use `any` or `@ts-ignore` to get past errors.
 
