@@ -1,8 +1,10 @@
+import { clerkMiddleware } from "@clerk/express";
 import { sql } from "drizzle-orm";
 import express from "express";
-import { db } from "./db/client.ts";
-import { errorHandler, notFoundHandler } from "./middleware/error-handler.ts";
 import activitiesRouter from "./api/activities.ts";
+import { db } from "./db/client.ts";
+import { requireSignedIn } from "./middleware/auth.ts";
+import { errorHandler, notFoundHandler } from "./middleware/error-handler.ts";
 
 export function createApp() {
   const app = express();
@@ -19,6 +21,9 @@ export function createApp() {
     }
   });
 
+  // Everything under /api needs a signed-in user; /health stays public.
+  // clerkMiddleware() reads CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY from server/.env.
+  app.use("/api", clerkMiddleware(), requireSignedIn);
   app.use("/api/activities", activitiesRouter);
   app.use(notFoundHandler);
   app.use(errorHandler);

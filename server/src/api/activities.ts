@@ -1,22 +1,14 @@
-import { Router, type Request, type Response } from "express";
+import { Router } from "express";
+import { getActivities } from "../db/activities.ts";
+import { signedInUserId } from "../middleware/auth.ts";
 
 const router = Router();
 
-// GET endpoint (/api/activities)
-router.get("/", (req: Request, res: Response) => {
-  console.log("GET /activities called");
-  res.json({ message: "Hello from a TypeScript file!" });
+// GET /api/activities: the signed-in user's activities, newest first.
+router.get("/", async (req, res) => {
+  const userId = signedInUserId(req);
+  const activities = await getActivities(userId);
+  res.json(activities);
 });
-
-// Optional: Define an interface for expected POST data
-// interface EchoBody {
-//   name: string;
-// }
-
-// POST endpoint (/api/echo)
-// router.post("/echo", (req: Request<{}, {}, EchoBody>, res: Response) => {
-//   const userData = req.body;
-//   res.status(201).json({ received: userData });
-// });
 
 export default router;

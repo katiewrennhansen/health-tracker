@@ -27,6 +27,9 @@ export const activitySchema = activityInputSchema.extend({
   createdAt: z.iso.datetime({ offset: true }),
 });
 
+/** GET /api/activities response. */
+export const activityListSchema = z.array(activitySchema);
+
 export type ActivityType = z.infer<typeof activityTypeSchema>;
 export type ActivityInput = z.infer<typeof activityInputSchema>;
 export type Activity = z.infer<typeof activitySchema>;
