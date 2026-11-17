@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/react";
 
 const navItems = [
   { to: "/", label: "Today" },
@@ -9,6 +10,13 @@ export function Navbar() {
   return (
     <nav aria-label="Main">
       <ul className="flex flex-wrap gap-x-5 gap-y-1 text-sm">
+        <Show when="signed-out">
+          <SignInButton />
+          <SignUpButton />
+        </Show>
+        <Show when="signed-in">
+          <UserButton />
+        </Show>
         {navItems.map((item) => (
           <li key={item.to}>
             <Link

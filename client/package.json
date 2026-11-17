@@ -8,6 +8,7 @@
     "build": "vite build"
   },
   "dependencies": {
+    "@clerk/react": "^6.18.9",
     "@health-tracker/shared": "*",
     "@heroui/react": "^3.2.7",
     "@heroui/styles": "^3.2.7",
