@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import express from "express";
 import { db } from "./db/client.ts";
 import { errorHandler, notFoundHandler } from "./middleware/error-handler.ts";
+import activitiesRouter from "./api/activities.ts";
 
 export function createApp() {
   const app = express();
@@ -18,6 +19,7 @@ export function createApp() {
     }
   });
 
+  app.use("/api/activities", activitiesRouter);
   app.use(notFoundHandler);
   app.use(errorHandler);
 

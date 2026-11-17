@@ -4,7 +4,7 @@ Guidance for AI coding agents working in this repo. Read this before making chan
 
 ## Project
 
-A web app with two logs (workouts and life events: alcohol, elevation, illness) and a "Today" screen that says how hard to train and why.
+A web app with two logs (activities and life events: alcohol, elevation, illness) and a "Today" screen that says how hard to train and why.
 
 - Full scope, architecture and ticket plan: [Notion project scope](https://app.notion.com/p/Project-scope-workout-tracker-with-context-aware-AI-advice-41a2e6dc989181aca788d39334f59ac9)
 - Work is organised as tickets (F-1, W-2, R-4, ...). Work on one ticket at a time, and meet its "Done when" criterion before calling it done.
@@ -34,13 +34,13 @@ Run `npm run lint` and `npm run build` (and tests, once they exist) before repor
 
 ## Layout
 
-- `shared/`: Zod schemas and inferred types (Workout, Event, Advice, Signals). The single source of truth for data shapes.
+- `shared/`: Zod schemas and inferred types (Activity, LifeEvent, Advice, Signals). The single source of truth for data shapes.
 - `server/`: Node + Express API, Drizzle + PostgreSQL (`pg` driver), Clerk auth, LLM call.
 - `client/`: Vite + React + Tailwind + HeroUI, React Router for routes, TanStack Query for all fetching.
 
 Packages import shared code as `@health-tracker/shared`. Never import across packages with relative paths.
 
-Inside the client, import from `client/src` with the `@/` alias (`@/components/WorkoutForm`). Use `./` only for files in the same folder; ESLint rejects `../` imports. The alias is defined in both `client/tsconfig.app.json` (`paths`) and `client/vite.config.ts` (`resolve.alias`); change both together.
+Inside the client, import from `client/src` with the `@/` alias (`@/components/ActivityForm`). Use `./` only for files in the same folder; ESLint rejects `../` imports. The alias is defined in both `client/tsconfig.app.json` (`paths`) and `client/vite.config.ts` (`resolve.alias`); change both together.
 
 ## Rules
 
@@ -57,7 +57,7 @@ Inside the client, import from `client/src` with the `@/` alias (`@/components/W
 - **Database connection.** Use the `db` from `server/src/db/client.ts`; don't create other pools. It falls back to the local dev database when `DATABASE_URL` is unset.
 - **Server errors.** Throw or reject from handlers and let `server/src/middleware/error-handler.ts` respond. Express 5 forwards async errors itself, so no try/catch-and-next boilerplate. Unexpected errors return a generic 500; never send stack traces or internal messages to the client.
 - **Client routes and auth.** Routes live in `client/src/router.tsx` (React Router 8, `createBrowserRouter`; import from `react-router`, and `RouterProvider` from `react-router/dom`). New app pages go under the `RequireSignedIn` layout route, which sends signed-out users to `/sign-up`; sign-up/sign-in sit under `RequireSignedOut` (both in `components/RouteGuards.tsx`, using Clerk's `useAuth()`). There is no full-page loading screen: guards render nothing until Clerk has loaded, and actions show loading on the control that started them. Clerk reads its key from `VITE_CLERK_PUBLISHABLE_KEY` in `client/.env`.
-- **Client data flow.** All fetching goes through TanStack Query hooks. Any workout or event mutation invalidates the advice query.
+- **Client data flow.** All fetching goes through TanStack Query hooks. Any activity or event mutation invalidates the advice query.
 - TypeScript is strict; do not use `any` or `@ts-ignore` to get past errors.
 
 ## Working style

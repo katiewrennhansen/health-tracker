@@ -11,4 +11,8 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+  server: {
+    // Forward API calls to the Express server, so the client can fetch "/api/..." with no CORS setup.
+    proxy: { "/api": "http://localhost:3001" },
+  },
 });

@@ -1,8 +1,8 @@
 # Health Tracker
 
-A workout tracker that tells you how hard to train today, and why.
+An activity tracker that tells you how hard to train today, and why.
 
-You log your workouts and the things that affect recovery: alcohol, changes in altitude, and illness. A **Today** screen turns those logs into a readiness level (rest, easy, moderate or go), a suggested session, and a short explanation.
+You log your activities and the things that affect recovery: alcohol, changes in altitude, and illness. A **Today** screen turns those logs into a readiness level (rest, easy, moderate or go), a suggested session, and a short explanation.
 
 > **Status:** early development. The monorepo, TypeScript build and linting are set up; the app itself is not built yet. See [Roadmap](#roadmap).
 
@@ -20,10 +20,10 @@ This keeps the advice cheap, testable and conservative. It is not medical advice
 ## Features (MVP)
 
 - Sign up, sign in and password reset (Clerk)
-- Workout log: date, type, duration and perceived effort (1–10)
+- Activity log: date, type, duration and perceived effort (1–10)
 - Event log: alcohol, elevation and illness
 - Today's advice: readiness, suggested session and reasons
-- History: one timeline of workouts and events, with edit and delete
+- History: one timeline of activities and events, with edit and delete
 
 Not in the MVP: wearable integrations, set and rep tracking, GPS elevation, a native mobile app, social features and chat.
 
@@ -86,7 +86,7 @@ Both reload on save, and Ctrl+C stops both. The API has one endpoint so far: `GE
 | Week | Epic                          | Status                                               |
 | ---- | ----------------------------- | ---------------------------------------------------- |
 | 1    | Foundation and authentication | In progress (repo, client and server scaffolds done) |
-| 2    | Workout logging               | Not started                                          |
+| 2    | Activity logging              | Not started                                          |
 | 3    | Event logging                 | Not started                                          |
 | 4    | Rules engine                  | Not started                                          |
 | 5    | AI advice and Today screen    | Not started                                          |
