@@ -18,7 +18,9 @@ export function Navbar() {
                   to={item.to}
                   end
                   className={({ isActive }) =>
-                    isActive ? "font-semibold text-accent" : "text-muted hover:text-foreground"
+                    isActive
+                      ? "font-semibold text-accent"
+                      : "text-muted hover:text-foreground"
                   }
                 >
                   {item.label}

@@ -71,18 +71,19 @@ Before `npm run dev`, add your Clerk keys (Clerk dashboard → API keys):
 
 Run from the repo root:
 
-| Command             | What it does                                                                          |
-| ------------------- | ------------------------------------------------------------------------------------- |
-| `npm run dev`       | Start the API (http://localhost:3001) and the client (http://localhost:5173) together |
-| `npm run build`     | Type-check and build all packages, then bundle the client with Vite                   |
-| `npm run typecheck` | Type-check everything without writing output                                          |
-| `npm run lint`      | Run ESLint across all packages                                                        |
-| `npm run lint:fix`  | Fix what ESLint can fix automatically                                                 |
-| `npm run clean`     | Remove build output                                                                   |
-| `npm run db:start`  | Start the local Postgres server, creating it and the database on first run            |
-| `npm run db:stop`   | Stop the local Postgres server                                                        |
-| `npm run db:generate` | Create a migration from changes in `server/src/db/schema.ts`                        |
-| `npm run db:migrate`  | Apply pending migrations                                                            |
+| Command               | What it does                                                                          |
+| --------------------- | ------------------------------------------------------------------------------------- |
+| `npm run dev`         | Start the API (http://localhost:3001) and the client (http://localhost:5173) together |
+| `npm run build`       | Type-check and build all packages, then bundle the client with Vite                   |
+| `npm run typecheck`   | Type-check everything without writing output                                          |
+| `npm run lint`        | Run ESLint across all packages                                                        |
+| `npm run lint:fix`    | Fix what ESLint can fix automatically                                                 |
+| `npm run format`      | Format all files with Prettier (`npm run format:check` only reports)                  |
+| `npm run clean`       | Remove build output                                                                   |
+| `npm run db:start`    | Start the local Postgres server, creating it and the database on first run            |
+| `npm run db:stop`     | Stop the local Postgres server                                                        |
+| `npm run db:generate` | Create a migration from changes in `server/src/db/schema.ts`                          |
+| `npm run db:migrate`  | Apply pending migrations                                                              |
 
 Both reload on save, and Ctrl+C stops both. The API has one endpoint so far: `GET /health`, which returns 503 if the database is unreachable.
 

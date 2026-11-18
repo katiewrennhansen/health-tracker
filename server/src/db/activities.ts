@@ -3,17 +3,19 @@ import { and, desc, eq } from "drizzle-orm";
 import { db } from "./client.ts";
 import { activities } from "./schema.ts";
 
+const generateActivitySelect = (a: typeof activities) => ({
+  id: a.id,
+  date: a.date,
+  type: a.type,
+  durationMinutes: a.durationMinutes,
+  effort: a.effort,
+  createdAt: a.createdAt,
+});
+
 /** A user's activities, newest first. */
 export function getActivities(userId: string) {
   return db
-    .select({
-      id: activities.id,
-      date: activities.date,
-      type: activities.type,
-      durationMinutes: activities.durationMinutes,
-      effort: activities.effort,
-      createdAt: activities.createdAt,
-    })
+    .select(generateActivitySelect(activities))
     .from(activities)
     .where(eq(activities.userId, userId))
     .orderBy(desc(activities.date), desc(activities.createdAt));
@@ -23,14 +25,7 @@ export async function createActivity(userId: string, input: ActivityInput) {
   const [row] = await db
     .insert(activities)
     .values({ userId, ...input })
-    .returning({
-      id: activities.id,
-      date: activities.date,
-      type: activities.type,
-      durationMinutes: activities.durationMinutes,
-      effort: activities.effort,
-      createdAt: activities.createdAt,
-    });
+    .returning(generateActivitySelect(activities));
 
   if (!row) throw new Error("INSERT ... RETURNING returned no row");
   return row;
@@ -46,14 +41,7 @@ export async function updateActivity(
     .update(activities)
     .set(patch)
     .where(and(eq(activities.userId, userId), eq(activities.id, id)))
-    .returning({
-      id: activities.id,
-      date: activities.date,
-      type: activities.type,
-      durationMinutes: activities.durationMinutes,
-      effort: activities.effort,
-      createdAt: activities.createdAt,
-    });
+    .returning(generateActivitySelect(activities));
 
   return row ?? null;
 }

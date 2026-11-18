@@ -7,16 +7,24 @@ export const notFoundHandler: RequestHandler = (req, res) => {
 
 /** Errors that carry their own 4xx status, such as malformed JSON bodies from express.json(). */
 function clientErrorStatus(err: unknown): number | undefined {
-  if (typeof err !== "object" || err === null || !("status" in err)) return undefined;
+  if (typeof err !== "object" || err === null || !("status" in err))
+    return undefined;
   const { status } = err;
-  return typeof status === "number" && status >= 400 && status < 500 ? status : undefined;
+  return typeof status === "number" && status >= 400 && status < 500
+    ? status
+    : undefined;
 }
 
 /**
  * Last middleware in the chain. Express 5 also routes rejected promises from async handlers here.
  * Unexpected errors are logged on the server and return a generic 500, so no internals reach the client.
  */
-export const errorHandler: ErrorRequestHandler = (err: unknown, _req, res, next) => {
+export const errorHandler: ErrorRequestHandler = (
+  err: unknown,
+  _req,
+  res,
+  next,
+) => {
   if (res.headersSent) {
     next(err);
     return;
@@ -24,7 +32,9 @@ export const errorHandler: ErrorRequestHandler = (err: unknown, _req, res, next)
 
   const status = clientErrorStatus(err);
   if (status !== undefined) {
-    res.status(status).json({ error: err instanceof Error ? err.message : "Bad request" });
+    res
+      .status(status)
+      .json({ error: err instanceof Error ? err.message : "Bad request" });
     return;
   }
 

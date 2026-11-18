@@ -17,20 +17,21 @@ A web app with two logs (activities and life events: alcohol, elevation, illness
 
 ## Commands (run from the repo root)
 
-| Command | What it does |
-| --- | --- |
-| `npm install` | Install all workspaces |
-| `npm run dev` | API server on http://localhost:3001 and client (Vite) on http://localhost:5173, both reloading on save |
-| `npm run build` | `tsc -b` (type-checks and builds shared, server, client), then `vite build` for the client |
-| `npm run typecheck` | Type-check everything without emitting |
-| `npm run clean` | Remove build output |
-| `npm run db:start` / `db:stop` | Start or stop this project's own Postgres (data in `.postgres-data/`, port 5433) |
-| `npm run db:generate` | Generate a migration from `server/src/db/schema.ts` |
-| `npm run db:migrate` | Apply pending migrations |
-| `npm run lint` | ESLint with type-aware typescript-eslint rules |
-| `npm run lint:fix` | Auto-fix what ESLint can |
+| Command                        | What it does                                                                                           |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| `npm install`                  | Install all workspaces                                                                                 |
+| `npm run dev`                  | API server on http://localhost:3001 and client (Vite) on http://localhost:5173, both reloading on save |
+| `npm run build`                | `tsc -b` (type-checks and builds shared, server, client), then `vite build` for the client             |
+| `npm run typecheck`            | Type-check everything without emitting                                                                 |
+| `npm run clean`                | Remove build output                                                                                    |
+| `npm run db:start` / `db:stop` | Start or stop this project's own Postgres (data in `.postgres-data/`, port 5433)                       |
+| `npm run db:generate`          | Generate a migration from `server/src/db/schema.ts`                                                    |
+| `npm run db:migrate`           | Apply pending migrations                                                                               |
+| `npm run lint`                 | ESLint with type-aware typescript-eslint rules                                                         |
+| `npm run lint:fix`             | Auto-fix what ESLint can                                                                               |
+| `npm run format`               | Format everything with Prettier (`format:check` only reports)                                          |
 
-Run `npm run lint` and `npm run build` (and tests, once they exist) before reporting a change as finished. Fix lint errors rather than disabling rules; if a disable is truly needed, use a single-line `eslint-disable-next-line` with a reason.
+Run `npm run format`, `npm run lint` and `npm run build` (and tests, once they exist) before reporting a change as finished. Fix lint errors rather than disabling rules; if a disable is truly needed, use a single-line `eslint-disable-next-line` with a reason.
 
 ## Layout
 
@@ -68,5 +69,6 @@ Inside the client, import from `client/src` with the `@/` alias (`@/components/A
 - Do not commit, push or deploy unless asked.
 
 <!-- HEROUI-NATIVE-AGENTS-MD-START -->
+
 [HeroUI Native Docs Index]|root: ./.heroui-docs/native|STOP. What you remember about HeroUI Native is WRONG for this project. Always search docs and read before any task.|If docs missing, run this command first: heroui agents-md --native --output AGENTS.md|components/(buttons):{button.mdx,close-button.mdx,link-button.mdx}|components/(collections):{menu.mdx,tag-group.mdx}|components/(controls):{slider.mdx,switch.mdx}|components/(data-display):{chip.mdx}|components/(feedback):{alert.mdx,skeleton-group.mdx,skeleton.mdx,spinner.mdx}|components/(forms):{checkbox.mdx,control-field.mdx,description.mdx,field-error.mdx,input-group.mdx,input-otp.mdx,input.mdx,label.mdx,radio-group.mdx,search-field.mdx,select.mdx,text-area.mdx,text-field.mdx}|components/(layout):{card.mdx,separator.mdx,surface.mdx}|components/(media):{avatar.mdx}|components/(navigation):{accordion.mdx,list-group.mdx,tabs.mdx}|components/(overlays):{bottom-sheet.mdx,dialog.mdx,popover.mdx,toast.mdx}|components/(typography):{text.mdx}|components/(utilities):{pressable-feedback.mdx,scroll-shadow.mdx}|getting-started/(handbook):{animation.mdx,colors.mdx,composition.mdx,portal.mdx,provider.mdx,styling.mdx,theming.mdx}|getting-started/(overview):{design-principles.mdx,quick-start.mdx}|getting-started/(ui-for-agents):{agent-skills.mdx,agents-md.mdx,design-md.mdx,llms-txt.mdx,mcp-server.mdx}|releases:{beta-10.mdx,beta-11.mdx,beta-12.mdx,beta-13.mdx,cli-v1-0-0.mdx,rc-1.mdx,rc-2.mdx,rc-3.mdx,rc-4.mdx,v1-0-0.mdx,v1-0-1.mdx,v1-0-10.mdx,v1-0-11.mdx,v1-0-2.mdx,v1-0-3.mdx,v1-0-4.mdx,v1-0-5.mdx,v1-0-6.mdx,v1-0-7.mdx,v1-0-8.mdx,v1-0-9.mdx}
 <!-- HEROUI-NATIVE-AGENTS-MD-END -->
