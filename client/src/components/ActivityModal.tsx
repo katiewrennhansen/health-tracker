@@ -1,15 +1,15 @@
 import { Modal } from "@heroui/react";
-import { AddActivityForm } from "@/components/AddActivityForm";
+import { ActivityForm } from "@/components/ActivityForm";
 import type { Activity } from "@health-tracker/shared";
 
-interface AddActivityModalProps {
+interface ActivityModalProps {
   onClose: () => void;
   /** The activity to edit; leave out to log a new one. */
   activity?: Activity;
 }
 
 /** "Add activity" button that opens the form in a modal, and closes it once the activity is saved. */
-export function AddActivityModal({ onClose, activity }: AddActivityModalProps) {
+export function ActivityModal({ onClose, activity }: ActivityModalProps) {
   return (
     <Modal isOpen={true} onOpenChange={onClose}>
       <Modal.Backdrop>
@@ -17,10 +17,12 @@ export function AddActivityModal({ onClose, activity }: AddActivityModalProps) {
           <Modal.Dialog>
             <Modal.CloseTrigger />
             <Modal.Header>
-              <Modal.Heading>Add activity</Modal.Heading>
+              <Modal.Heading>
+                {activity ? "Edit" : "Add"} activity
+              </Modal.Heading>
             </Modal.Header>
             <Modal.Body>
-              <AddActivityForm onSaved={onClose} activity={activity} />
+              <ActivityForm onSaved={onClose} activity={activity} />
             </Modal.Body>
           </Modal.Dialog>
         </Modal.Container>

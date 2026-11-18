@@ -1,4 +1,4 @@
-import { AddActivityModal } from "@/components/AddActivityModal";
+import { ActivityModal } from "@/components/ActivityModal";
 import { Button } from "@/ui/Button";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
@@ -34,7 +34,7 @@ export function TodayPage() {
       </div>
 
       {activityModalOpen && (
-        <AddActivityModal onClose={handleCloseActivityModal} />
+        <ActivityModal onClose={handleCloseActivityModal} />
       )}
     </section>
   );

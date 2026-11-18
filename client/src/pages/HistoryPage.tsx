@@ -1,5 +1,5 @@
 import { ActivitiesTable } from "@/components/ActivitiesTable";
-import { AddActivityModal } from "@/components/AddActivityModal";
+import { ActivityModal } from "@/components/ActivityModal";
 import { useActivities } from "@/queries/useActivities";
 import { useState } from "react";
 import type { Activity } from "@health-tracker/shared";
@@ -35,7 +35,7 @@ export function HistoryPage() {
       )}
 
       {activityModalOpen && (
-        <AddActivityModal
+        <ActivityModal
           onClose={handleCloseActivityModal}
           activity={selectedActivity}
         />

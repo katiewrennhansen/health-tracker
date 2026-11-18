@@ -43,14 +43,13 @@ export function useActivitiesMutation() {
         body: JSON.stringify(patch),
       });
       if (!res.ok)
-        throw new Error(`PATCH /api/activities/${id} failed with ${res.status}`);
+        throw new Error(
+          `PATCH /api/activities/${id} failed with ${res.status}`,
+        );
       return activitySchema.parse(await res.json());
     },
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: activitiesQueryKey }),
-    onError: () => {
-      alert("Failed to update activity");
-    },
   });
 
   const deleteActivity = useMutation({
@@ -70,9 +69,6 @@ export function useActivitiesMutation() {
     },
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: activitiesQueryKey }),
-    onError: () => {
-      alert("Failed to delete activity");
-    },
   });
 
   return { createActivity, updateActivity, deleteActivity };

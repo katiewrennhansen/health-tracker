@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router/dom";
 import { router } from "@/router";
 import "@/index.css";
+import { Toast } from "@heroui/react";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ createRoot(rootElement).render(
     >
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
+        <Toast.Provider placement="top end" maxVisibleToasts={3} />
       </QueryClientProvider>
     </ClerkProvider>
   </StrictMode>,

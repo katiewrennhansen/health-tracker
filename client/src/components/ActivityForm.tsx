@@ -6,6 +6,7 @@ import {
   activityTypeSchema,
 } from "@health-tracker/shared";
 import {
+  toast,
   Calendar,
   DateField,
   DatePicker,
@@ -26,13 +27,13 @@ function today(): string {
   return new Date().toLocaleDateString("en-CA");
 }
 
-interface AddActivityFormProps {
+interface ActivityFormProps {
   activity?: Activity;
   onSaved: () => void;
 }
 
 /** Logs a new activity or edits an existing one. Validates with the same shared schema the server uses. */
-export function AddActivityForm({ activity, onSaved }: AddActivityFormProps) {
+export function ActivityForm({ activity, onSaved }: ActivityFormProps) {
   const { createActivity, updateActivity } = useActivitiesMutation();
   const {
     control,
@@ -57,8 +58,9 @@ export function AddActivityForm({ activity, onSaved }: AddActivityFormProps) {
       try {
         await createActivity.mutateAsync(values, { onSuccess: onSaved });
         onSaved();
-      } catch (error) {
-        console.error(error);
+        toast.success("Activity saved");
+      } catch {
+        toast.danger("Couldn't save the activity");
       }
     } else {
       // Editing: send only the fields the user changed.
@@ -76,8 +78,9 @@ export function AddActivityForm({ activity, onSaved }: AddActivityFormProps) {
         );
 
         onSaved();
-      } catch (error) {
-        console.error(error);
+        toast.success("Activity saved");
+      } catch {
+        toast.danger("Couldn't save the activity");
       }
     }
   };
