@@ -89,14 +89,14 @@ Both reload on save, and Ctrl+C stops both. The API has one endpoint so far: `GE
 
 ## Roadmap
 
-| Week | Epic                          | Status                                               |
-| ---- | ----------------------------- | ---------------------------------------------------- |
-| 1    | Foundation and authentication | In progress (repo, client and server scaffolds done) |
-| 2    | Activity logging              | Not started                                          |
-| 3    | Event logging                 | Not started                                          |
-| 4    | Rules engine                  | Not started                                          |
-| 5    | AI advice and Today screen    | Not started                                          |
-| 6    | Polish and deploy             | Not started                                          |
+| Week | Epic                          | Status      |
+| ---- | ----------------------------- | ----------- |
+| 1    | Foundation and authentication | Completed   |
+| 2    | Activity logging              | In progress |
+| 3    | Event logging                 | Not started |
+| 4    | Rules engine                  | Not started |
+| 5    | AI advice and Today screen    | Not started |
+| 6    | Polish and deploy             | Not started |
 
 ## Contributing
 
