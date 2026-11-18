@@ -36,8 +36,32 @@ export async function createActivity(userId: string, input: ActivityInput) {
   return row;
 }
 
+export async function updateActivity(
+  userId: string,
+  id: string,
+  input: ActivityInput,
+) {
+  const [row] = await db
+    .update(activities)
+    .set({ ...input })
+    .where(and(eq(activities.userId, userId), eq(activities.id, id)))
+    .returning({
+      id: activities.id,
+      date: activities.date,
+      type: activities.type,
+      durationMinutes: activities.durationMinutes,
+      effort: activities.effort,
+      createdAt: activities.createdAt,
+    });
+
+  return row ?? null;
+}
+
 /** Deletes one of the user's activities. Returns false if the user has no activity with that ID. */
-export async function deleteActivity(userId: string, id: string): Promise<boolean> {
+export async function deleteActivity(
+  userId: string,
+  id: string,
+): Promise<boolean> {
   const result = await db
     .delete(activities)
     .where(and(eq(activities.userId, userId), eq(activities.id, id)));

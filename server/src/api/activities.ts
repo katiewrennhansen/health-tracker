@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   getActivities,
   createActivity,
+  updateActivity,
   deleteActivity,
 } from "../db/activities.ts";
 import { signedInUserId } from "../middleware/auth.ts";
@@ -11,7 +12,8 @@ const router = Router();
 
 // GET /api/activities: the signed-in user's activities, newest first.
 router.get("/", async (req, res) => {
-  const activities = await getActivities(signedInUserId(req));
+  const userId = signedInUserId(req);
+  const activities = await getActivities(userId);
   res.json(activities);
 });
 
@@ -25,6 +27,28 @@ router.post("/", async (req, res) => {
   }
   const activity = await createActivity(signedInUserId(req), parsed.data);
   res.status(201).json(activity);
+});
+
+router.put("/:id", async (req, res) => {
+  const userId = signedInUserId(req);
+  const id = activityIdSchema.safeParse(req.params.id);
+  if (!id.success) {
+    res.status(400).json({ error: "Invalid ID", issues: id.error.issues });
+    return;
+  }
+  const parsed = activityInputSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res
+      .status(400)
+      .json({ error: "Invalid activity", issues: parsed.error.issues });
+    return;
+  }
+  const updated = await updateActivity(userId, id.data, parsed.data);
+  if (!updated) {
+    res.status(404).json({ error: "Activity not found" });
+    return;
+  }
+  res.json(updated);
 });
 
 router.delete("/:id", async (req, res) => {
