@@ -1,5 +1,4 @@
 import { AddActivityModal } from "@/components/AddActivityModal";
-import { useActivitiesMutation } from "@/queries/useActivitiesMutation";
 import { Button } from "@/ui/Button";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";

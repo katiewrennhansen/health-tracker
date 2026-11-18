@@ -8,9 +8,7 @@ export function HistoryPage() {
   const { data = [], isLoading, error } = useActivities();
 
   const [activityModalOpen, setActivityModalOpen] = useState(false);
-  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
-    null,
-  );
+  const [selectedActivity, setSelectedActivity] = useState<Activity>();
 
   const handleCloseActivityModal = () => {
     setActivityModalOpen(false);

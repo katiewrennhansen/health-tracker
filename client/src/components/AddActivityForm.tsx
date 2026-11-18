@@ -1,9 +1,10 @@
 import {
+  type Activity,
   type ActivityInput,
+  type ActivityPatch,
   activityInputSchema,
   activityTypeSchema,
 } from "@health-tracker/shared";
-import type { Activity } from "@health-tracker/shared";
 import {
   Calendar,
   DateField,
@@ -18,29 +19,29 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { parseDate } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
 import { useActivitiesMutation } from "@/queries/useActivitiesMutation";
+import { Button } from "@/ui/Button";
 
 /** Today in the user's time zone, as YYYY-MM-DD (the "en-CA" locale formats dates that way). */
 function today(): string {
   return new Date().toLocaleDateString("en-CA");
 }
 
-function defaultValues(): ActivityInput {
-  return { date: today(), type: "run", durationMinutes: 1, effort: 1 };
-}
-
 interface AddActivityFormProps {
+  activity?: Activity;
   onSaved: () => void;
-  activity: Activity | null;
 }
 
-/**
- * Logs a new activity. Validates with the same shared schema the server uses.
- * Calls `onSaved` once the server has stored it (the Today page uses this to close the modal).
- */
-export function AddActivityForm({ onSaved, activity }: AddActivityFormProps) {
+/** Logs a new activity or edits an existing one. Validates with the same shared schema the server uses. */
+export function AddActivityForm({ activity, onSaved }: AddActivityFormProps) {
   const { createActivity, updateActivity } = useActivitiesMutation();
-  const { control, handleSubmit } = useForm<ActivityInput>({
+  const {
+    control,
+    handleSubmit,
+    formState: { dirtyFields },
+  } = useForm<ActivityInput>({
     resolver: zodResolver(activityInputSchema),
+    // Check a field when the user leaves it, then re-check as they fix it.
+    mode: "onBlur",
     defaultValues: activity
       ? {
           date: activity.date,
@@ -48,24 +49,47 @@ export function AddActivityForm({ onSaved, activity }: AddActivityFormProps) {
           durationMinutes: activity.durationMinutes,
           effort: activity.effort,
         }
-      : defaultValues(),
+      : { date: today(), type: "run", durationMinutes: 1, effort: 1 },
   });
 
-  const onSubmit = handleSubmit(async (values) => {
-    if (activity?.id) {
-      //only grab updated form values from the form, not the entire activity object
-      await updateActivity.mutateAsync({ id: activity.id, ...values });
+  const onSubmit = async (values: ActivityInput) => {
+    if (!activity) {
+      try {
+        await createActivity.mutateAsync(values, { onSuccess: onSaved });
+        onSaved();
+      } catch (error) {
+        console.error(error);
+      }
     } else {
-      await createActivity.mutateAsync(values);
+      // Editing: send only the fields the user changed.
+      const patch: ActivityPatch = {};
+      if (dirtyFields.date) patch.date = values.date;
+      if (dirtyFields.type) patch.type = values.type;
+      if (dirtyFields.durationMinutes)
+        patch.durationMinutes = values.durationMinutes;
+      if (dirtyFields.effort) patch.effort = values.effort;
+
+      try {
+        await updateActivity.mutateAsync(
+          { id: activity.id, patch },
+          { onSuccess: onSaved },
+        );
+
+        onSaved();
+      } catch (error) {
+        console.error(error);
+      }
     }
-    onSaved();
-  });
+  };
+
+  const isSaving = createActivity.isPending || updateActivity.isPending;
+  const saveFailed = createActivity.isError || updateActivity.isError;
 
   return (
     <form
       className="flex flex-col gap-4"
       noValidate
-      onSubmit={(e) => void onSubmit(e)}
+      onSubmit={handleSubmit(onSubmit)}
     >
       <Controller
         control={control}
@@ -166,6 +190,8 @@ export function AddActivityForm({ onSaved, activity }: AddActivityFormProps) {
             onBlur={field.onBlur}
             minValue={1}
             maxValue={1440}
+            // Keep out-of-range values (instead of clamping) so Zod shows the error.
+            commitBehavior="validate"
             isInvalid={Boolean(fieldState.error)}
           >
             <Label>Duration (minutes)</Label>
@@ -190,6 +216,7 @@ export function AddActivityForm({ onSaved, activity }: AddActivityFormProps) {
             onBlur={field.onBlur}
             minValue={1}
             maxValue={10}
+            commitBehavior="validate"
             isInvalid={Boolean(fieldState.error)}
           >
             <Label>Effort (1–10)</Label>
@@ -203,11 +230,20 @@ export function AddActivityForm({ onSaved, activity }: AddActivityFormProps) {
         )}
       />
 
-      {createActivity.error && (
+      {saveFailed && (
         <p className="text-sm text-danger">
           Couldn't save the activity. Please try again.
         </p>
       )}
+
+      <Button
+        type="submit"
+        className="self-end"
+        isDisabled={isSaving}
+        isLoading={isSaving}
+      >
+        Save activity
+      </Button>
     </form>
   );
 }

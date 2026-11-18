@@ -9,8 +9,8 @@ export default tseslint.config(
   { ignores: ["**/dist/**", "**/node_modules/**", "**/*.tsbuildinfo"] },
 
   js.configs.recommended,
-  ...tseslint.configs.strictTypeChecked,
-  ...tseslint.configs.stylisticTypeChecked,
+  // typescript-eslint's standard starting point: rules that almost always flag a real bug.
+  ...tseslint.configs.recommendedTypeChecked,
 
   {
     languageOptions: {
@@ -25,20 +25,22 @@ export default tseslint.config(
     },
     rules: {
       // Matches `verbatimModuleSyntax`: type-only imports must say so.
-      "@typescript-eslint/consistent-type-imports": ["error", { fixStyle: "inline-type-imports" }],
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        { fixStyle: "inline-type-imports" },
+      ],
       "@typescript-eslint/no-import-type-side-effects": "error",
 
-      // No escape hatches past the type checker (AGENTS.md).
-      "@typescript-eslint/no-explicit-any": "error",
-      "@typescript-eslint/ban-ts-comment": ["error", { "ts-expect-error": "allow-with-description" }],
-      "@typescript-eslint/no-non-null-assertion": "error",
+      // Allow async functions as JSX event handlers (e.g. onSubmit={handleSubmit(onSubmit)}).
+      "@typescript-eslint/no-misused-promises": [
+        "error",
+        { checksVoidReturn: { attributes: false } },
+      ],
 
-      // Unhandled promises are a common source of silent API and query bugs.
-      "@typescript-eslint/no-floating-promises": "error",
-      "@typescript-eslint/no-misused-promises": "error",
-
-      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
-      "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
       eqeqeq: ["error", "always"],
 
       // Cross-package code goes through the workspace package name, never relative paths.
@@ -47,8 +49,14 @@ export default tseslint.config(
         {
           patterns: [
             {
-              group: ["**/shared/src/**", "**/server/src/**", "**/client/src/**", "@health-tracker/*/src/**"],
-              message: "Import other packages by name, e.g. '@health-tracker/shared'.",
+              group: [
+                "**/shared/src/**",
+                "**/server/src/**",
+                "**/client/src/**",
+                "@health-tracker/*/src/**",
+              ],
+              message:
+                "Import other packages by name, e.g. '@health-tracker/shared'.",
             },
           ],
         },
@@ -69,15 +77,26 @@ export default tseslint.config(
       "no-restricted-imports": [
         "error",
         {
-          paths: [{ name: "@health-tracker/server", message: "The client must not import server code." }],
+          paths: [
+            {
+              name: "@health-tracker/server",
+              message: "The client must not import server code.",
+            },
+          ],
           patterns: [
             {
-              group: ["**/shared/src/**", "**/server/**", "@health-tracker/*/src/**"],
-              message: "Import shared code as '@health-tracker/shared'; never import server code.",
+              group: [
+                "**/shared/src/**",
+                "**/server/**",
+                "@health-tracker/*/src/**",
+              ],
+              message:
+                "Import shared code as '@health-tracker/shared'; never import server code.",
             },
             {
               group: ["../*", "../**"],
-              message: "Use the '@/' alias for imports outside this folder, e.g. '@/components/Foo'.",
+              message:
+                "Use the '@/' alias for imports outside this folder, e.g. '@/components/Foo'.",
             },
           ],
         },

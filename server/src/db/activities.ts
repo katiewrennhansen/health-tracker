@@ -1,4 +1,4 @@
-import type { ActivityInput } from "@health-tracker/shared";
+import type { ActivityInput, ActivityPatch } from "@health-tracker/shared";
 import { and, desc, eq } from "drizzle-orm";
 import { db } from "./client.ts";
 import { activities } from "./schema.ts";
@@ -36,14 +36,15 @@ export async function createActivity(userId: string, input: ActivityInput) {
   return row;
 }
 
+/** Updates only the fields in `patch`. Returns null if the user has no activity with that ID. */
 export async function updateActivity(
   userId: string,
   id: string,
-  input: ActivityInput,
+  patch: ActivityPatch,
 ) {
   const [row] = await db
     .update(activities)
-    .set({ ...input })
+    .set(patch)
     .where(and(eq(activities.userId, userId), eq(activities.id, id)))
     .returning({
       id: activities.id,

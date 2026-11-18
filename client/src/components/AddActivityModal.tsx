@@ -4,7 +4,8 @@ import type { Activity } from "@health-tracker/shared";
 
 interface AddActivityModalProps {
   onClose: () => void;
-  activity: Activity | null;
+  /** The activity to edit; leave out to log a new one. */
+  activity?: Activity;
 }
 
 /** "Add activity" button that opens the form in a modal, and closes it once the activity is saved. */

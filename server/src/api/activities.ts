@@ -6,7 +6,11 @@ import {
   deleteActivity,
 } from "../db/activities.ts";
 import { signedInUserId } from "../middleware/auth.ts";
-import { activityIdSchema, activityInputSchema } from "@health-tracker/shared";
+import {
+  activityIdSchema,
+  activityInputSchema,
+  activityPatchSchema,
+} from "@health-tracker/shared";
 
 const router = Router();
 
@@ -29,6 +33,7 @@ router.post("/", async (req, res) => {
   res.status(201).json(activity);
 });
 
+// PATCH /api/activities/:id: updates only the fields sent in the body.
 router.patch("/:id", async (req, res) => {
   const userId = signedInUserId(req);
   const id = activityIdSchema.safeParse(req.params.id);
@@ -36,7 +41,7 @@ router.patch("/:id", async (req, res) => {
     res.status(400).json({ error: "Invalid ID", issues: id.error.issues });
     return;
   }
-  const parsed = activityInputSchema.safeParse(req.body);
+  const parsed = activityPatchSchema.safeParse(req.body);
   if (!parsed.success) {
     res
       .status(400)
