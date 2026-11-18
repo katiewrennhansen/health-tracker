@@ -1,6 +1,6 @@
-import { AddActivityForm } from "@/components/AddActivityForm";
-import { useActivities } from "@/queries/useActivities";
 import { Activity } from "@/components/Activity";
+import { AddActivityModal } from "@/components/AddActivityModal";
+import { useActivities } from "@/queries/useActivities";
 
 export function TodayPage() {
   const { data = [], isLoading, error } = useActivities();
@@ -14,11 +14,14 @@ export function TodayPage() {
       </p>
       {isLoading && <p>Loading activities...</p>}
       {error && <p>Error loading activities: {error.message}</p>}
+
+      <div className="self-end">
+        <AddActivityModal />
+      </div>
+
       {data.map((activity) => (
         <Activity key={activity.id} {...activity} />
       ))}
-
-      <AddActivityForm />
     </section>
   );
 }

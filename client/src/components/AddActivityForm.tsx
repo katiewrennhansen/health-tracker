@@ -5,16 +5,18 @@ import {
 } from "@health-tracker/shared";
 import {
   Button,
+  Calendar,
+  DateField,
+  DatePicker,
   FieldError,
-  Input,
   Label,
   ListBox,
   NumberField,
   Select,
   Spinner,
-  TextField,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { parseDate } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
 import { useActivitiesMutation } from "@/queries/useActivitiesMutation";
 
@@ -24,20 +26,23 @@ function today(): string {
 }
 
 function defaultValues(): ActivityInput {
-  return { date: today(), type: "run", durationMinutes: 0, effort: 0 };
+  return { date: today(), type: "run", durationMinutes: 1, effort: 1 };
 }
 
-/** Logs a new activity. Validates with the same shared schema the server uses. */
-export function AddActivityForm() {
+/**
+ * Logs a new activity. Validates with the same shared schema the server uses.
+ * Calls `onSaved` once the server has stored it (the Today page uses this to close the modal).
+ */
+export function AddActivityForm({ onSaved }: { onSaved: () => void }) {
   const { createActivity } = useActivitiesMutation();
-  const { control, handleSubmit, reset } = useForm<ActivityInput>({
+  const { control, handleSubmit } = useForm<ActivityInput>({
     resolver: zodResolver(activityInputSchema),
     defaultValues: defaultValues(),
   });
 
   const onSubmit = handleSubmit(async (values) => {
     await createActivity.mutateAsync(values);
-    reset(defaultValues());
+    onSaved();
   });
 
   return (
@@ -50,17 +55,54 @@ export function AddActivityForm() {
         control={control}
         name="date"
         render={({ field, fieldState }) => (
-          <TextField
+          // The form keeps the date as "YYYY-MM-DD"; DatePicker works with CalendarDate.
+          <DatePicker
             name={field.name}
-            value={field.value}
-            onChange={field.onChange}
+            value={field.value ? parseDate(field.value) : null}
+            onChange={(value) => {
+              field.onChange(value?.toString() ?? "");
+            }}
             onBlur={field.onBlur}
             isInvalid={Boolean(fieldState.error)}
           >
             <Label>Date</Label>
-            <Input type="date" />
+            <DateField.Group fullWidth>
+              <DateField.Input>
+                {(segment) => <DateField.Segment segment={segment} />}
+              </DateField.Input>
+              <DateField.Suffix>
+                <DatePicker.Trigger>
+                  <DatePicker.TriggerIndicator />
+                </DatePicker.Trigger>
+              </DateField.Suffix>
+            </DateField.Group>
             <FieldError>{fieldState.error?.message}</FieldError>
-          </TextField>
+            <DatePicker.Popover>
+              <Calendar aria-label="Activity date">
+                <Calendar.Header>
+                  <Calendar.YearPickerTrigger>
+                    <Calendar.YearPickerTriggerHeading />
+                    <Calendar.YearPickerTriggerIndicator />
+                  </Calendar.YearPickerTrigger>
+                  <Calendar.NavButton slot="previous" />
+                  <Calendar.NavButton slot="next" />
+                </Calendar.Header>
+                <Calendar.Grid>
+                  <Calendar.GridHeader>
+                    {(day) => <Calendar.HeaderCell>{day}</Calendar.HeaderCell>}
+                  </Calendar.GridHeader>
+                  <Calendar.GridBody>
+                    {(date) => <Calendar.Cell date={date} />}
+                  </Calendar.GridBody>
+                </Calendar.Grid>
+                <Calendar.YearPickerGrid>
+                  <Calendar.YearPickerGridBody>
+                    {({ year }) => <Calendar.YearPickerCell year={year} />}
+                  </Calendar.YearPickerGridBody>
+                </Calendar.YearPickerGrid>
+              </Calendar>
+            </DatePicker.Popover>
+          </DatePicker>
         )}
       />
 
