@@ -29,7 +29,7 @@ router.post("/", async (req, res) => {
   res.status(201).json(activity);
 });
 
-router.put("/:id", async (req, res) => {
+router.patch("/:id", async (req, res) => {
   const userId = signedInUserId(req);
   const id = activityIdSchema.safeParse(req.params.id);
   if (!id.success) {

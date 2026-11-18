@@ -1,22 +1,16 @@
-import { Button, Modal } from "@heroui/react";
-import { PlusIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import { Modal } from "@heroui/react";
 import { AddActivityForm } from "@/components/AddActivityForm";
+import type { Activity } from "@health-tracker/shared";
+
+interface AddActivityModalProps {
+  onClose: () => void;
+  activity: Activity | null;
+}
 
 /** "Add activity" button that opens the form in a modal, and closes it once the activity is saved. */
-export function AddActivityModal() {
-  const [isOpen, setOpen] = useState(false);
-
-  const close = () => {
-    setOpen(false);
-  };
-
+export function AddActivityModal({ onClose, activity }: AddActivityModalProps) {
   return (
-    // The Button inside Modal opens it (Modal wraps React Aria's DialogTrigger).
-    <Modal isOpen={isOpen} onOpenChange={setOpen}>
-      <Button className="self-start">
-        <PlusIcon /> Add activity
-      </Button>
+    <Modal isOpen={true} onOpenChange={onClose}>
       <Modal.Backdrop>
         <Modal.Container>
           <Modal.Dialog>
@@ -25,7 +19,7 @@ export function AddActivityModal() {
               <Modal.Heading>Add activity</Modal.Heading>
             </Modal.Header>
             <Modal.Body>
-              <AddActivityForm onSaved={close} />
+              <AddActivityForm onSaved={onClose} activity={activity} />
             </Modal.Body>
           </Modal.Dialog>
         </Modal.Container>

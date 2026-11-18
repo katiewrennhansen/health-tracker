@@ -3,8 +3,8 @@ import {
   activityInputSchema,
   activityTypeSchema,
 } from "@health-tracker/shared";
+import type { Activity } from "@health-tracker/shared";
 import {
-  Button,
   Calendar,
   DateField,
   DatePicker,
@@ -13,7 +13,6 @@ import {
   ListBox,
   NumberField,
   Select,
-  Spinner,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { parseDate } from "@internationalized/date";
@@ -29,19 +28,36 @@ function defaultValues(): ActivityInput {
   return { date: today(), type: "run", durationMinutes: 1, effort: 1 };
 }
 
+interface AddActivityFormProps {
+  onSaved: () => void;
+  activity: Activity | null;
+}
+
 /**
  * Logs a new activity. Validates with the same shared schema the server uses.
  * Calls `onSaved` once the server has stored it (the Today page uses this to close the modal).
  */
-export function AddActivityForm({ onSaved }: { onSaved: () => void }) {
-  const { createActivity } = useActivitiesMutation();
+export function AddActivityForm({ onSaved, activity }: AddActivityFormProps) {
+  const { createActivity, updateActivity } = useActivitiesMutation();
   const { control, handleSubmit } = useForm<ActivityInput>({
     resolver: zodResolver(activityInputSchema),
-    defaultValues: defaultValues(),
+    defaultValues: activity
+      ? {
+          date: activity.date,
+          type: activity.type,
+          durationMinutes: activity.durationMinutes,
+          effort: activity.effort,
+        }
+      : defaultValues(),
   });
 
   const onSubmit = handleSubmit(async (values) => {
-    await createActivity.mutateAsync(values);
+    if (activity?.id) {
+      //only grab updated form values from the form, not the entire activity object
+      await updateActivity.mutateAsync({ id: activity.id, ...values });
+    } else {
+      await createActivity.mutateAsync(values);
+    }
     onSaved();
   });
 
@@ -192,15 +208,6 @@ export function AddActivityForm({ onSaved }: { onSaved: () => void }) {
           Couldn't save the activity. Please try again.
         </p>
       )}
-
-      <Button
-        type="submit"
-        className="self-start"
-        isPending={createActivity.isPending}
-      >
-        {createActivity.isPending && <Spinner size="sm" color="current" />}
-        {createActivity.isPending ? "Saving…" : "Add activity"}
-      </Button>
     </form>
   );
 }
