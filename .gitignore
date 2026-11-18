@@ -3,7 +3,6 @@ dist/
 *.tsbuildinfo
 .env
 .env.*
-!.env.example
 .postgres-data/
 .DS_Store
 # heroui-agents-md

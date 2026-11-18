@@ -65,7 +65,7 @@ The project runs its own Postgres server on port 5433, so it doesn't clash with 
 Before `npm run dev`, add your Clerk keys (Clerk dashboard → API keys):
 
 - `client/.env`: `VITE_CLERK_PUBLISHABLE_KEY=pk_test_...`
-- `server/.env`: `CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` (copy `server/.env.example`)
+- `server/.env`: `CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` (copy `server/.env`)
 
 ### Scripts
 

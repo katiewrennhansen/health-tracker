@@ -1,9 +1,14 @@
+// This file sits outside tsconfig.json's `include`, so load Node's types (for `process`) here.
+/// <reference types="node" />
 import { defineConfig } from "drizzle-kit";
-import { databaseUrl } from "./src/config.ts";
 
 export default defineConfig({
   dialect: "postgresql",
   schema: "./src/db/schema.ts",
   out: "./drizzle",
-  dbCredentials: { url: databaseUrl },
+  dbCredentials: {
+    url:
+      process.env.DATABASE_URL ??
+      "postgres://postgres@localhost:5433/health_tracker",
+  },
 });
