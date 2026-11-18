@@ -1,0 +1,164 @@
+import {
+  type ActivityInput,
+  activityInputSchema,
+  activityTypeSchema,
+} from "@health-tracker/shared";
+import {
+  Button,
+  FieldError,
+  Input,
+  Label,
+  ListBox,
+  NumberField,
+  Select,
+  Spinner,
+  TextField,
+} from "@heroui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
+import { useActivitiesMutation } from "@/queries/useActivitiesMutation";
+
+/** Today in the user's time zone, as YYYY-MM-DD (the "en-CA" locale formats dates that way). */
+function today(): string {
+  return new Date().toLocaleDateString("en-CA");
+}
+
+function defaultValues(): ActivityInput {
+  return { date: today(), type: "run", durationMinutes: 0, effort: 0 };
+}
+
+/** Logs a new activity. Validates with the same shared schema the server uses. */
+export function AddActivityForm() {
+  const { createActivity } = useActivitiesMutation();
+  const { control, handleSubmit, reset } = useForm<ActivityInput>({
+    resolver: zodResolver(activityInputSchema),
+    defaultValues: defaultValues(),
+  });
+
+  const onSubmit = handleSubmit(async (values) => {
+    await createActivity.mutateAsync(values);
+    reset(defaultValues());
+  });
+
+  return (
+    <form
+      className="flex flex-col gap-4"
+      noValidate
+      onSubmit={(e) => void onSubmit(e)}
+    >
+      <Controller
+        control={control}
+        name="date"
+        render={({ field, fieldState }) => (
+          <TextField
+            name={field.name}
+            value={field.value}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+            isInvalid={Boolean(fieldState.error)}
+          >
+            <Label>Date</Label>
+            <Input type="date" />
+            <FieldError>{fieldState.error?.message}</FieldError>
+          </TextField>
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="type"
+        render={({ field, fieldState }) => (
+          <Select
+            name={field.name}
+            value={field.value}
+            onChange={(key) => {
+              field.onChange(key);
+            }}
+            onBlur={field.onBlur}
+            isInvalid={Boolean(fieldState.error)}
+          >
+            <Label>Type</Label>
+            <Select.Trigger>
+              <Select.Value />
+              <Select.Indicator />
+            </Select.Trigger>
+            <Select.Popover>
+              <ListBox>
+                {activityTypeSchema.options.map((type) => (
+                  <ListBox.Item key={type} id={type} textValue={type}>
+                    <span className="capitalize">{type}</span>
+                    <ListBox.ItemIndicator />
+                  </ListBox.Item>
+                ))}
+              </ListBox>
+            </Select.Popover>
+            <FieldError>{fieldState.error?.message}</FieldError>
+          </Select>
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="durationMinutes"
+        render={({ field, fieldState }) => (
+          <NumberField
+            name={field.name}
+            value={field.value}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+            minValue={1}
+            maxValue={1440}
+            isInvalid={Boolean(fieldState.error)}
+          >
+            <Label>Duration (minutes)</Label>
+            <NumberField.Group>
+              <NumberField.DecrementButton />
+              <NumberField.Input />
+              <NumberField.IncrementButton />
+            </NumberField.Group>
+            <FieldError>{fieldState.error?.message}</FieldError>
+          </NumberField>
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="effort"
+        render={({ field, fieldState }) => (
+          <NumberField
+            name={field.name}
+            value={field.value}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+            minValue={1}
+            maxValue={10}
+            isInvalid={Boolean(fieldState.error)}
+          >
+            <Label>Effort (1–10)</Label>
+            <NumberField.Group>
+              <NumberField.DecrementButton />
+              <NumberField.Input />
+              <NumberField.IncrementButton />
+            </NumberField.Group>
+            <FieldError>{fieldState.error?.message}</FieldError>
+          </NumberField>
+        )}
+      />
+
+      {createActivity.error && (
+        <p className="text-sm text-danger">
+          Couldn't save the activity. Please try again.
+        </p>
+      )}
+
+      <Button
+        type="submit"
+        className="self-start"
+        isPending={createActivity.isPending}
+      >
+        {createActivity.isPending && <Spinner size="sm" color="current" />}
+        {createActivity.isPending ? "Saving…" : "Add activity"}
+      </Button>
+    </form>
+  );
+}

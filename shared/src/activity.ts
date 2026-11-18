@@ -21,9 +21,12 @@ export const activityInputSchema = z.strictObject({
   effort: z.int().min(1).max(10),
 });
 
+/** An activity's ID, e.g. the `:id` in DELETE /api/activities/:id. */
+export const activityIdSchema = z.uuid();
+
 /** A stored activity, as returned by the API. `userId` stays on the server. */
 export const activitySchema = activityInputSchema.extend({
-  id: z.uuid(),
+  id: activityIdSchema,
   createdAt: z.iso.datetime({ offset: true }),
 });
 

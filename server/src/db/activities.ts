@@ -1,26 +1,45 @@
-import type { Activity } from "@health-tracker/shared";
-import { sql } from "drizzle-orm";
+import type { ActivityInput } from "@health-tracker/shared";
+import { and, desc, eq } from "drizzle-orm";
 import { db } from "./client.ts";
+import { activities } from "./schema.ts";
 
-/** An activity as `pg` returns it: like the shared `Activity`, but `createdAt` is still a Date until it's sent as JSON. */
-export type ActivityRow = Omit<Activity, "createdAt"> & { createdAt: Date };
+/** A user's activities, newest first. */
+export function getActivities(userId: string) {
+  return db
+    .select({
+      id: activities.id,
+      date: activities.date,
+      type: activities.type,
+      durationMinutes: activities.durationMinutes,
+      effort: activities.effort,
+      createdAt: activities.createdAt,
+    })
+    .from(activities)
+    .where(eq(activities.userId, userId))
+    .orderBy(desc(activities.date), desc(activities.createdAt));
+}
 
-/**
- * A user's activities, newest first. Columns are aliased to match the shared `Activity` schema;
- * `date::text` keeps the date as 'YYYY-MM-DD' instead of a time-zone-shifted Date.
- */
-export async function getActivities(userId: string): Promise<ActivityRow[]> {
-  const { rows } = await db.execute<ActivityRow>(sql`
-    SELECT
-      id,
-      date::text       AS "date",
-      type,
-      duration_minutes AS "durationMinutes",
-      effort,
-      created_at       AS "createdAt"
-    FROM activities
-    WHERE user_id = ${userId}
-    ORDER BY date DESC, created_at DESC
-  `);
-  return rows;
+export async function createActivity(userId: string, input: ActivityInput) {
+  const [row] = await db
+    .insert(activities)
+    .values({ userId, ...input })
+    .returning({
+      id: activities.id,
+      date: activities.date,
+      type: activities.type,
+      durationMinutes: activities.durationMinutes,
+      effort: activities.effort,
+      createdAt: activities.createdAt,
+    });
+
+  if (!row) throw new Error("INSERT ... RETURNING returned no row");
+  return row;
+}
+
+/** Deletes one of the user's activities. Returns false if the user has no activity with that ID. */
+export async function deleteActivity(userId: string, id: string): Promise<boolean> {
+  const result = await db
+    .delete(activities)
+    .where(and(eq(activities.userId, userId), eq(activities.id, id)));
+  return (result.rowCount ?? 0) > 0;
 }

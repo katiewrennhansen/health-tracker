@@ -1,7 +1,10 @@
+import { AddActivityForm } from "@/components/AddActivityForm";
 import { useActivities } from "@/queries/useActivities";
+import { Activity } from "@/components/Activity";
 
 export function TodayPage() {
-  const { data, isLoading, error } = useActivities();
+  const { data = [], isLoading, error } = useActivities();
+
   return (
     <section className="flex flex-col gap-2">
       <h1 className="text-xl font-semibold">Today</h1>
@@ -11,7 +14,11 @@ export function TodayPage() {
       </p>
       {isLoading && <p>Loading activities...</p>}
       {error && <p>Error loading activities: {error.message}</p>}
-      {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
+      {data.map((activity) => (
+        <Activity key={activity.id} {...activity} />
+      ))}
+
+      <AddActivityForm />
     </section>
   );
 }
