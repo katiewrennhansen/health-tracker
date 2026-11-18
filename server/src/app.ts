@@ -4,7 +4,9 @@ import express from "express";
 import activitiesRouter from "./api/activities.ts";
 import { db } from "./db/client.ts";
 import { requireSignedIn } from "./middleware/auth.ts";
+import { apiRateLimit } from "./middleware/rate-limit.ts";
 import { errorHandler, notFoundHandler } from "./middleware/error-handler.ts";
+import { clientOrigins } from "./config.ts";
 
 export function createApp() {
   const app = express();
@@ -21,9 +23,14 @@ export function createApp() {
     }
   });
 
-  // Everything under /api needs a signed-in user; /health stays public.
+  // Everything under /api needs a signed-in user and is rate limited per user; /health stays public.
   // clerkMiddleware() reads CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY from server/.env.
-  app.use("/api", clerkMiddleware(), requireSignedIn);
+  app.use(
+    "/api",
+    clerkMiddleware({ authorizedParties: clientOrigins }),
+    requireSignedIn,
+    apiRateLimit,
+  );
   app.use("/api/activities", activitiesRouter);
   app.use(notFoundHandler);
   app.use(errorHandler);

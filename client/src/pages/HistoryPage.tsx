@@ -3,6 +3,7 @@ import { ActivityModal } from "@/components/ActivityModal";
 import { useActivities } from "@/queries/useActivities";
 import { useState } from "react";
 import type { Activity } from "@health-tracker/shared";
+import { Spinner } from "@heroui/react";
 
 export function HistoryPage() {
   const { data = [], isLoading, error } = useActivities();
@@ -25,8 +26,8 @@ export function HistoryPage() {
       <p className="text-muted">
         Your activities and events will appear here, newest first.
       </p>
-      {isLoading && <p>Loading activities...</p>}
-      {error && <p>Error loading activities: {error.message}</p>}
+      {isLoading && <Spinner />}
+      {error && <p>Unable to load activities.</p>}
       {!isLoading && !error && (
         <ActivitiesTable
           activities={data}
