@@ -1,7 +1,7 @@
 import { createApp } from "./app.ts";
 import { config } from "./config.ts";
 
-const port = Number(config.PORT ?? 3001);
+const port = config.PORT;
 
 createApp().listen(port, () => {
   console.log(`API listening on http://localhost:${port}`);

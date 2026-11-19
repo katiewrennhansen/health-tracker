@@ -6,7 +6,7 @@ import { db } from "./db/client.ts";
 import { requireSignedIn } from "./middleware/auth.ts";
 import { apiRateLimit } from "./middleware/rate-limit.ts";
 import { errorHandler, notFoundHandler } from "./middleware/error-handler.ts";
-import { clientOrigins } from "./config.ts";
+import { config } from "./config.ts";
 
 export function createApp() {
   const app = express();
@@ -27,7 +27,7 @@ export function createApp() {
   // clerkMiddleware() reads CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY from server/.env.
   app.use(
     "/api",
-    clerkMiddleware({ authorizedParties: clientOrigins }),
+    clerkMiddleware({ authorizedParties: config.CLIENT_ORIGINS }),
     requireSignedIn,
     apiRateLimit,
   );
