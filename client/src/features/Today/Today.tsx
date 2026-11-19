@@ -3,7 +3,7 @@ import { Button } from "@/ui/Button";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 
-export function TodayPage() {
+export function Today() {
   const [activityModalOpen, setActivityModalOpen] = useState(false);
 
   const handleAddActivityClick = () => {

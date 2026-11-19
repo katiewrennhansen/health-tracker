@@ -22,6 +22,7 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
+  const userId = signedInUserId(req);
   const parsed = activityInputSchema.safeParse(req.body);
   if (!parsed.success) {
     res
@@ -29,7 +30,7 @@ router.post("/", async (req, res) => {
       .json({ error: "Invalid activity", issues: parsed.error.issues });
     return;
   }
-  const activity = await createActivity(signedInUserId(req), parsed.data);
+  const activity = await createActivity(userId, parsed.data);
   res.status(201).json(activity);
 });
 

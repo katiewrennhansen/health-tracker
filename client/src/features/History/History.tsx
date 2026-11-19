@@ -1,11 +1,11 @@
-import { ActivitiesTable } from "@/components/ActivitiesTable";
+import { ActivitiesTable } from "@/features/History/ActivitiesTable";
 import { ActivityModal } from "@/components/ActivityModal";
 import { useActivities } from "@/queries/useActivities";
 import { useState } from "react";
 import type { Activity } from "@health-tracker/shared";
 import { Spinner } from "@heroui/react";
 
-export function HistoryPage() {
+export function History() {
   const { data = [], isLoading, error } = useActivities();
 
   const [activityModalOpen, setActivityModalOpen] = useState(false);

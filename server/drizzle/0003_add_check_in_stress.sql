@@ -1,0 +1,2 @@
+ALTER TABLE "daily_checkins" ADD COLUMN "stress" integer DEFAULT 3 NOT NULL;--> statement-breakpoint
+ALTER TABLE "daily_checkins" ADD CONSTRAINT "daily_checkins_stress_check" CHECK ("daily_checkins"."stress" BETWEEN 1 AND 5);

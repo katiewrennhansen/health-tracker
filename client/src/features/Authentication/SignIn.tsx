@@ -1,9 +1,9 @@
-import { SignIn } from "@clerk/react";
+import { SignIn as SignInComponent } from "@clerk/react";
 
-export function SignInPage() {
+export function SignIn() {
   return (
     <div className="flex justify-center">
-      <SignIn
+      <SignInComponent
         routing="path"
         path="/sign-in"
         signUpUrl="/sign-up"

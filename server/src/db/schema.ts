@@ -150,6 +150,7 @@ export const dailyCheckins = pgTable(
     mood: integer("mood").notNull(),
     energy: integer("energy").notNull(),
     soreness: integer("soreness").notNull(),
+    stress: integer("stress").notNull().default(3),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -166,6 +167,7 @@ export const dailyCheckins = pgTable(
     check("daily_checkins_mood_check", sql`${t.mood} BETWEEN 1 AND 5`),
     check("daily_checkins_energy_check", sql`${t.energy} BETWEEN 1 AND 5`),
     check("daily_checkins_soreness_check", sql`${t.soreness} BETWEEN 1 AND 5`),
+    check("daily_checkins_stress_check", sql`${t.stress} BETWEEN 1 AND 5`),
     unique("daily_checkins_user_date_unique").on(t.userId, t.date),
   ],
 );
