@@ -15,6 +15,13 @@
       "when": 1795037075276,
       "tag": "0001_create_activities",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795112795428,
+      "tag": "0002_add_life_events",
+      "breakpoints": true
     }
   ]
 }
