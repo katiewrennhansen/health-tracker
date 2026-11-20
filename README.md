@@ -94,8 +94,8 @@ Both reload on save, and Ctrl+C stops both. The API has one endpoint so far: `GE
 | Week | Epic                          | Status      |
 | ---- | ----------------------------- | ----------- |
 | 1    | Foundation and authentication | Completed   |
-| 2    | Activity logging              | In progress |
-| 3    | Event logging                 | Not started |
+| 2    | Activity logging              | Completed   |
+| 3    | Event logging                 | In Progress |
 | 4    | Rules engine                  | Not started |
 | 5    | AI advice and Today screen    | Not started |
 | 6    | Polish and deploy             | Not started |
