@@ -20,20 +20,5 @@ export function useCheckInsMutation() {
     onSuccess: refetchCheckIns,
   });
 
-  //   const updateActivity = useMutation({
-  //     mutationFn: ({ id, patch }: { id: string; patch: ActivityPatch }) =>
-  //       api(`/activities/${id}`, {
-  //         method: "PATCH",
-  //         body: patch,
-  //         schema: activitySchema,
-  //       }),
-  //     onSuccess: refetchActivities,
-  //   });
-
-  //   const deleteActivity = useMutation({
-  //     mutationFn: (id: string) => api(`/activities/${id}`, { method: "DELETE" }),
-  //     onSuccess: refetchActivities,
-  //   });
-
   return { createCheckin };
 }

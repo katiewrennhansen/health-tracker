@@ -3,15 +3,15 @@ import { signedInUserId } from "../middleware/auth.ts";
 import { getAllCheckIns, createCheckIn } from "../db/check-ins.ts";
 import { checkInInputSchema } from "@health-tracker/shared";
 
-const router = Router();
+const checkInsRouter = Router();
 
-router.get("/", async (req, res) => {
+checkInsRouter.get("/", async (req, res) => {
   const userId = signedInUserId(req);
   const checkIns = await getAllCheckIns(userId);
   res.json(checkIns);
 });
 
-router.post("/", async (req, res) => {
+checkInsRouter.post("/", async (req, res) => {
   const userId = signedInUserId(req);
   const parsed = checkInInputSchema.safeParse(req.body);
 
@@ -26,4 +26,4 @@ router.post("/", async (req, res) => {
   res.status(201).json(checkIn);
 });
 
-export default router;
+export default checkInsRouter;

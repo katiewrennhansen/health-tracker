@@ -12,16 +12,16 @@ import {
   activityPatchSchema,
 } from "@health-tracker/shared";
 
-const router = Router();
+const activitiesRouter = Router();
 
 // GET /api/activities: the signed-in user's activities, newest first.
-router.get("/", async (req, res) => {
+activitiesRouter.get("/", async (req, res) => {
   const userId = signedInUserId(req);
   const activities = await getActivities(userId);
   res.json(activities);
 });
 
-router.post("/", async (req, res) => {
+activitiesRouter.post("/", async (req, res) => {
   const userId = signedInUserId(req);
   const parsed = activityInputSchema.safeParse(req.body);
   if (!parsed.success) {
@@ -35,7 +35,7 @@ router.post("/", async (req, res) => {
 });
 
 // PATCH /api/activities/:id: updates only the fields sent in the body.
-router.patch("/:id", async (req, res) => {
+activitiesRouter.patch("/:id", async (req, res) => {
   const userId = signedInUserId(req);
   const id = activityIdSchema.safeParse(req.params.id);
   if (!id.success) {
@@ -57,7 +57,7 @@ router.patch("/:id", async (req, res) => {
   res.json(updated);
 });
 
-router.delete("/:id", async (req, res) => {
+activitiesRouter.delete("/:id", async (req, res) => {
   const id = activityIdSchema.safeParse(req.params.id);
   if (!id.success) {
     res.status(400).json({ error: "Invalid ID", issues: id.error.issues });
@@ -72,4 +72,4 @@ router.delete("/:id", async (req, res) => {
   res.status(204).end();
 });
 
-export default router;
+export default activitiesRouter;
