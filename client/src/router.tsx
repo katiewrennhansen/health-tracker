@@ -6,7 +6,7 @@ import {
 } from "@/components/layout/RouteGuards";
 import { CheckIn } from "@/features/CheckIns/CheckIn";
 import { History } from "@/features/History/History";
-import { LogPage } from "@/pages/LogPage";
+import { LogEvents } from "@/features/LogEvents/LogEvents";
 import { SignIn } from "@/features/Authentication/SignIn";
 import { SignUp } from "@/features/Authentication/SignUp";
 import { Today } from "@/features/Today/Today";
@@ -20,7 +20,7 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <Today /> },
           { path: "check-in", element: <CheckIn /> },
-          { path: "log", element: <LogPage /> },
+          { path: "log", element: <LogEvents /> },
           { path: "history", element: <History /> },
         ],
       },

@@ -1,4 +1,4 @@
-export function LogPage() {
+export function LogEvents() {
   return (
     <section className="flex flex-col gap-2">
       <h1 className="text-xl font-semibold">Log</h1>
