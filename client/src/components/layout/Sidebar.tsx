@@ -1,33 +1,33 @@
+import clsx from "clsx";
 import { Drawer } from "@heroui/react";
 import { useState } from "react";
 import { SidebarContent } from "@/components/layout/SidebarContent";
-import { useBreakpoint } from "@/hooks/useBreakpoint";
+import { useMediaQuery } from "react-hooks-ts";
 
-/**
- * App navigation down the left side. Collapsed it shows icons only (labels in tooltips); expanded,
- * icons and labels. On wider screens it starts expanded and the toggle expands and collapses it in
- * place. On phones it stays a collapsed icon strip, and the toggle opens the expanded version in a
- * HeroUI Drawer over the page.
- */
 export function Sidebar() {
-  const isPhone = !useBreakpoint("md");
+  const isPhone = !useMediaQuery("(min-width: 768px)");
   const [isExpanded, setIsExpanded] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    if (isPhone) {
+      setIsDrawerOpen(true);
+    } else {
+      setIsExpanded((expanded) => !expanded);
+    }
+  };
 
   return (
     <>
       <aside
-        className={`sticky top-0 flex h-screen shrink-0 flex-col overflow-x-hidden border-r border-separator bg-surface transition-[width] ${
-          isExpanded && !isPhone ? "w-64 p-5" : "w-18 p-3"
-        }`}
+        className={clsx(
+          "sticky top-0 flex h-screen shrink-0 flex-col overflow-x-hidden border-r border-separator bg-surface transition-[width]",
+          isExpanded && !isPhone ? "w-64 p-5" : "w-18 p-3",
+        )}
       >
         <SidebarContent
           isExpanded={isExpanded && !isPhone}
-          onToggle={() =>
-            isPhone
-              ? setIsDrawerOpen(true)
-              : setIsExpanded((expanded) => !expanded)
-          }
+          onToggle={toggleSidebar}
         />
       </aside>
 

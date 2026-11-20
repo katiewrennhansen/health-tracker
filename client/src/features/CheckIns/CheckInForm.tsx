@@ -13,11 +13,7 @@ import { RatingField } from "@/features/CheckIns/RatingField";
 import { useCheckInsMutation } from "@/queries/useCheckInsMutations";
 import { Button } from "@/ui/Button";
 import { useCheckIns } from "@/queries/useCheckIns";
-
-/** Today in the user's time zone, as YYYY-MM-DD (the "en-CA" locale formats dates that way). */
-function today(): string {
-  return new Date().toLocaleDateString("en-CA");
-}
+import { today } from "@/utils/utils";
 
 const defaultValues: CheckInInput = {
   date: today(),
@@ -48,8 +44,12 @@ export function CheckInForm() {
     }
   };
 
+  if (todayCheckIn) {
+    return null;
+  }
+
   return (
-    <Card>
+    <Card className="rounded-sm">
       <form
         className="flex flex-col gap-6"
         noValidate
@@ -142,14 +142,7 @@ export function CheckInForm() {
 
         <Separator />
 
-        <div className="flex justify-end gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            onPress={() => reset(defaultValues)}
-          >
-            Cancel
-          </Button>
+        <div className="flex justify-end">
           <Button
             type="submit"
             isDisabled={createCheckin.isPending || !!todayCheckIn}

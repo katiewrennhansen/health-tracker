@@ -20,7 +20,7 @@ export function CheckIn() {
         </p>
       </header>
 
-      <div className="grid items-start gap-6 lg:grid-cols-[5fr_4fr]">
+      <div className="grid items-start gap-6">
         <CheckInForm />
         {isPending && <Spinner />}
         {error && <p className="text-danger">Unable to load check-ins.</p>}

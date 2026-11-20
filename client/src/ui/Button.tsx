@@ -10,7 +10,7 @@ export function Button({
   icon?: React.ReactNode;
 }) {
   return (
-    <HeroButton {...ButtonProps}>
+    <HeroButton {...ButtonProps} className="rounded-sm">
       {isLoading ? <Spinner size="sm" color="current" /> : icon}
       {children}
     </HeroButton>

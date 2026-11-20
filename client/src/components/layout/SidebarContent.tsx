@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
@@ -17,28 +18,32 @@ const navItems = [
   { to: "/check-in", label: "Check-in", icon: MoonIcon },
   { to: "/log", label: "Log", icon: PlusCircleIcon },
   { to: "/history", label: "History", icon: ListBulletIcon },
-] as const;
+];
 
-/** Logo, toggle button, nav links and account menu, laid out for the expanded or collapsed sidebar. */
+type SidebarContentProps = {
+  isExpanded: boolean;
+  onToggle: () => void;
+  onNavigate?: () => void;
+};
+
 export function SidebarContent({
   isExpanded,
   onToggle,
   onNavigate,
-}: {
-  isExpanded: boolean;
-  onToggle: () => void;
-  onNavigate?: () => void;
-}) {
+}: SidebarContentProps) {
   const { pathname } = useLocation();
 
   return (
     <div
-      className={`flex h-full flex-col gap-8 ${isExpanded ? "" : "items-center"}`}
+      className={clsx(
+        "flex h-full flex-col gap-8",
+        !isExpanded && "items-center",
+      )}
     >
       <div
-        className={`flex gap-3 items-center ${isExpanded ? "" : "flex-col"}`}
+        className={clsx("flex items-center gap-3", !isExpanded && "flex-col")}
       >
-        <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-sm bg-accent text-accent-foreground">
           <PulseIcon />
         </span>
         {isExpanded && (
@@ -62,25 +67,37 @@ export function SidebarContent({
         </Button>
       </div>
 
-      <nav aria-label="Main">
-        <ul className="flex flex-col gap-1">
+      <nav aria-label="Main" className="w-full">
+        <ul
+          className={clsx(
+            "flex flex-col gap-1 ",
+            !isExpanded && "items-center",
+          )}
+        >
           {navItems.map(({ to, label, icon: Icon }) => {
             const isActive = pathname === to;
             return (
-              <li key={to}>
+              <li
+                key={to}
+                className={clsx(
+                  "rounded-sm",
+                  !isExpanded && "w-full text-center",
+                  isActive ? "bg-accent-soft" : "hover:bg-default",
+                )}
+              >
                 <CollapsedTooltip label={label} isCollapsed={!isExpanded}>
                   <Link
                     href={to}
                     aria-label={isExpanded ? undefined : label}
                     aria-current={isActive ? "page" : undefined}
                     onPress={onNavigate}
-                    className={`flex items-center gap-3 rounded-xl py-2.5 no-underline ${
-                      isExpanded ? "px-3" : "justify-center"
-                    } ${
+                    className={clsx(
+                      "flex items-center gap-3 py-2 no-underline",
+                      isExpanded ? "px-3" : "justify-center",
                       isActive
-                        ? "bg-accent-soft font-semibold text-accent-soft-foreground"
-                        : "text-foreground hover:bg-default"
-                    }`}
+                        ? "font-semibold text-accent-soft-foreground"
+                        : "text-foreground",
+                    )}
                   >
                     <Icon className="size-5 shrink-0" aria-hidden />
                     {isExpanded && label}

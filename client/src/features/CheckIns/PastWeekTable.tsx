@@ -1,13 +1,12 @@
 import type { CheckIn } from "@health-tracker/shared";
 import { Card, Table } from "@heroui/react";
 import { format, parseISO } from "date-fns";
+import { hours } from "@/utils/utils";
 
 interface PastWeekTableProps {
   /** The user's check-ins, newest first (as the API returns them). */
   checkIns: CheckIn[];
 }
-
-const hours = (minutes: number) => `${(minutes / 60).toFixed(1)} h`;
 
 /** The last seven check-ins, plus the average sleep over the last fourteen. */
 export function PastWeekTable({ checkIns }: PastWeekTableProps) {
@@ -19,7 +18,7 @@ export function PastWeekTable({ checkIns }: PastWeekTableProps) {
     : null;
 
   return (
-    <Card>
+    <Card className="rounded-sm">
       <Card.Header>
         <Card.Title>Past week</Card.Title>
       </Card.Header>
@@ -69,7 +68,7 @@ export function PastWeekTable({ checkIns }: PastWeekTableProps) {
       </Card.Content>
       {usualSleepMinutes !== null && (
         <Card.Footer className="text-sm text-muted">
-          {`Your usual sleep: ${hours(usualSleepMinutes)} (${lastFortnight.length}-day average).`}
+          {`Your usual sleep: ${hours(usualSleepMinutes)} (${lastFortnight.length}-day average)`}
         </Card.Footer>
       )}
     </Card>
