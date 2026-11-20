@@ -1,5 +1,6 @@
 import type { CheckIn } from "@health-tracker/shared";
 import { Card, Table } from "@heroui/react";
+import { RatingChip } from "@/ui/RatingChip";
 import { format, parseISO } from "date-fns";
 import { hours } from "@/utils/utils";
 
@@ -35,6 +36,7 @@ export function PastWeekTable({ checkIns }: PastWeekTableProps) {
                 <Table.Column className="text-end">Stress</Table.Column>
               </Table.Header>
               <Table.Body
+                className="rounded-sm"
                 renderEmptyState={() => (
                   <p className="py-6 text-center text-sm text-muted">
                     No check-ins yet.
@@ -44,20 +46,22 @@ export function PastWeekTable({ checkIns }: PastWeekTableProps) {
                 {pastWeek.map((checkIn) => (
                   <Table.Row key={checkIn.id} id={checkIn.id}>
                     <Table.Cell>
-                      {format(parseISO(checkIn.date), "EEE d")}
+                      {format(parseISO(checkIn.date), "MMM dd yyyy")}
                     </Table.Cell>
                     <Table.Cell className="text-end">
                       {hours(checkIn.sleepMinutes)}
                     </Table.Cell>
                     <Table.Cell className="text-end">
-                      {checkIn.soreness}
-                    </Table.Cell>
-                    <Table.Cell className="text-end">{checkIn.mood}</Table.Cell>
-                    <Table.Cell className="text-end">
-                      {checkIn.energy}
+                      <RatingChip value={checkIn.soreness} />
                     </Table.Cell>
                     <Table.Cell className="text-end">
-                      {checkIn.stress}
+                      <RatingChip value={checkIn.mood} />
+                    </Table.Cell>
+                    <Table.Cell className="text-end">
+                      <RatingChip value={checkIn.energy} />
+                    </Table.Cell>
+                    <Table.Cell className="text-end">
+                      <RatingChip value={checkIn.stress} />
                     </Table.Cell>
                   </Table.Row>
                 ))}

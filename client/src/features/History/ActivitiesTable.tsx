@@ -21,7 +21,7 @@ export function ActivitiesTable({
   };
 
   return (
-    <Table>
+    <Table className="rounded-sm">
       <Table.ScrollContainer>
         <Table.Content aria-label="Activities" className="min-w-[600px]">
           <Table.Header>
@@ -32,6 +32,7 @@ export function ActivitiesTable({
             <Table.Column className="text-end">Actions</Table.Column>
           </Table.Header>
           <Table.Body
+            className="rounded-sm"
             renderEmptyState={() => (
               <p className="py-6 text-center text-sm text-muted">
                 No activities yet.
