@@ -27,7 +27,7 @@ export function Today() {
           type="submit"
           className="self-start"
           icon={<PlusIcon />}
-          onClick={handleAddActivityClick}
+          onPress={handleAddActivityClick}
         >
           Add activity
         </Button>

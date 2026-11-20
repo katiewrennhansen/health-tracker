@@ -1,0 +1,37 @@
+# Checks every push and pull request: formatting, build (which type-checks everything) and lint.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+# A newer push to the same branch cancels the run still going for the older one.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Check formatting
+        run: npm run format:check
+
+      # Build before lint: ESLint's type-aware rules read `shared`'s types from the built `shared/dist`.
+      - name: Build
+        run: npm run build
+
+      - name: Lint
+        run: npm run lint

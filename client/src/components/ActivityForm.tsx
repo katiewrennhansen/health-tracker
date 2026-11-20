@@ -56,7 +56,7 @@ export function ActivityForm({ activity, onSaved }: ActivityFormProps) {
   const onSubmit = async (values: ActivityInput) => {
     if (!activity) {
       try {
-        await createActivity.mutateAsync(values, { onSuccess: onSaved });
+        await createActivity.mutateAsync(values);
         onSaved();
         toast.success("Activity saved");
       } catch {

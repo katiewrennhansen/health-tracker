@@ -7,7 +7,6 @@ export function useCheckInsMutation() {
   const api = useApi();
   const queryClient = useQueryClient();
 
-  // Refetch the list after any change so it stays current (and, later, today's advice).
   const refetchCheckIns = () =>
     queryClient.invalidateQueries({ queryKey: checkInsQueryKey });
 

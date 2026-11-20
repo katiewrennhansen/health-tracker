@@ -65,7 +65,6 @@ export function ActivitiesTable({
                     onPress={() => {
                       handleDelete(activity.id);
                     }}
-                    // Only the row being deleted shows as pending.
                     isPending={
                       deleteActivity.isPending &&
                       deleteActivity.variables === activity.id

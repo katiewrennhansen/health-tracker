@@ -11,7 +11,6 @@ export function useActivitiesMutation() {
   const api = useApi();
   const queryClient = useQueryClient();
 
-  // Refetch the list after any change so it stays current (and, later, today's advice).
   const refetchActivities = () =>
     queryClient.invalidateQueries({ queryKey: activitiesQueryKey });
 

@@ -62,10 +62,12 @@ npm run dev
 
 The project runs its own Postgres server on port 5433, so it doesn't clash with another Postgres on the default port. The server connects to `postgres://postgres@localhost:5433/health_tracker` unless `DATABASE_URL` is set.
 
-Before `npm run dev`, add your Clerk keys (Clerk dashboard → API keys):
+Before `npm run dev`, copy the example env files and add your Clerk keys (Clerk dashboard → API keys):
 
-- `client/.env`: `VITE_CLERK_PUBLISHABLE_KEY=pk_test_...`
-- `server/.env`: `CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` (copy `server/.env`)
+```bash
+cp client/.env.example client/.env
+cp server/.env.example server/.env
+```
 
 ### Scripts
 

@@ -1,5 +1,5 @@
 import { dailyCheckins } from "./schema.ts";
-import { and, desc, eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { db } from "./client.ts";
 import type { CheckInInput } from "@health-tracker/shared";
 
