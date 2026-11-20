@@ -1,0 +1,83 @@
+import { type AlcoholInput, alcoholInputSchema } from "@health-tracker/shared";
+import { FieldError, Label, NumberField } from "@heroui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { DatePickerField } from "@/features/LogEvents/DatePickerField";
+import { FormActions } from "@/features/LogEvents/FormActions";
+import { today } from "@/utils/utils";
+
+type AlcoholFormProps = {
+  onSubmit: (values: AlcoholInput) => void | Promise<void>;
+};
+
+/** Logs how many drinks the user had on a day. */
+export function AlcoholForm({ onSubmit }: AlcoholFormProps) {
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting, isSubmitSuccessful },
+  } = useForm<AlcoholInput>({
+    resolver: zodResolver(alcoholInputSchema),
+    defaultValues: { date: today(), drinks: 1 },
+  });
+
+  // Clear the form after a successful save (react-hook-form recommends this over resetting inside onSubmit).
+  useEffect(() => {
+    if (isSubmitSuccessful) reset();
+  }, [isSubmitSuccessful, reset]);
+
+  return (
+    <form
+      className="flex flex-col gap-6"
+      noValidate
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Controller
+          control={control}
+          name="date"
+          render={({ field, fieldState }) => (
+            <DatePickerField
+              label="Date"
+              calendarLabel="Date"
+              name={field.name}
+              value={field.value}
+              onChange={(value) => field.onChange(value ?? "")}
+              onBlur={field.onBlur}
+              errorMessage={fieldState.error?.message}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="drinks"
+          render={({ field, fieldState }) => (
+            <NumberField
+              name={field.name}
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              minValue={1}
+              maxValue={50}
+              // Keep out-of-range values (instead of clamping) so Zod shows the error.
+              commitBehavior="validate"
+              isInvalid={Boolean(fieldState.error)}
+            >
+              <Label>Drinks</Label>
+              <NumberField.Group>
+                <NumberField.DecrementButton />
+                <NumberField.Input />
+                <NumberField.IncrementButton />
+              </NumberField.Group>
+              <FieldError>{fieldState.error?.message}</FieldError>
+            </NumberField>
+          )}
+        />
+      </div>
+
+      <FormActions submitLabel="Save drinks" isSubmitting={isSubmitting} />
+    </form>
+  );
+}

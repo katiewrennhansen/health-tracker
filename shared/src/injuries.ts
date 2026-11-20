@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { isoDateSchema } from "./common.ts";
+import {
+  endDateMessage,
+  endsOnOrAfterStart,
+  isNotEmpty,
+  isoDateSchema,
+} from "./common.ts";
 
 /** Must match the `body_area` enum in the database. */
 export const bodyAreaSchema = z.enum([
@@ -13,17 +18,6 @@ export const bodyAreaSchema = z.enum([
   "wrist",
   "other",
 ]);
-
-/** `YYYY-MM-DD` strings sort like dates, so a plain comparison works. A missing end date passes. */
-const endsOnOrAfterStart = (dates: {
-  startDate?: string;
-  endDate?: string | null;
-}) => !dates.startDate || !dates.endDate || dates.endDate >= dates.startDate;
-
-const endDateMessage = {
-  message: "End date can't be before the start date",
-  path: ["endDate"],
-};
 
 /** The injury fields a user sends. Matches the `injuries` table's columns and checks. */
 const injuryFieldsSchema = z.strictObject({
@@ -51,9 +45,7 @@ export const injuryInputSchema = injuryFieldsSchema.refine(
  */
 export const injuryPatchSchema = injuryFieldsSchema
   .partial()
-  .refine((patch) => Object.keys(patch).length > 0, {
-    message: "Send at least one field to update",
-  })
+  .refine(isNotEmpty, { message: "Send at least one field to update" })
   .refine(endsOnOrAfterStart, endDateMessage);
 
 /** An injury's ID, e.g. the `:id` in PATCH /api/injuries/:id. */

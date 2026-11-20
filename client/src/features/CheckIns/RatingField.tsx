@@ -38,7 +38,7 @@ export function RatingField({
           <ToggleButton
             key={rating}
             id={String(rating)}
-            className="data-selected:bg-foreground data-selected:text-background"
+            className="rounded-sm data-selected:bg-foreground data-selected:text-background"
           >
             {rating}
           </ToggleButton>
