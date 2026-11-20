@@ -2,14 +2,14 @@ import { Label, ToggleButton, ToggleButtonGroup } from "@heroui/react";
 
 const ratings = [1, 2, 3, 4, 5] as const;
 
-interface RatingFieldProps {
+type RatingFieldProps = {
   label: string;
   value: number;
   onChange: (value: number) => void;
   /** Words under the 1 and the 5, e.g. "None" and "Very sore". */
   lowLabel: string;
   highLabel: string;
-}
+};
 
 /** A 1–5 rating picked from five buttons, with the selected one filled. */
 export function RatingField({

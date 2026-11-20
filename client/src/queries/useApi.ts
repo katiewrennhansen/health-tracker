@@ -1,12 +1,12 @@
 import { useAuth } from "@clerk/react";
 
-interface ApiOptions<T> {
+type ApiOptions<T> = {
   method?: "GET" | "POST" | "PATCH" | "DELETE";
   /** Sent as JSON. */
   body?: unknown;
   /** Parses the response, e.g. the shared `activitySchema`. Leave out for responses with no body (DELETE's 204). */
   schema?: { parse: (data: unknown) => T };
-}
+};
 
 /**
  * Returns `api(path, options)` for calling our `/api` routes. It attaches the Clerk token,

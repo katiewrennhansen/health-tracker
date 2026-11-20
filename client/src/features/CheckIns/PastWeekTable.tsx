@@ -1,13 +1,12 @@
 import type { CheckIn } from "@health-tracker/shared";
 import { Card, Table } from "@heroui/react";
 import { RatingChip } from "@/ui/RatingChip";
-import { format, parseISO } from "date-fns";
-import { hours } from "@/utils/utils";
+import { formatDate, hours } from "@/utils/utils";
 
-interface PastWeekTableProps {
+type PastWeekTableProps = {
   /** The user's check-ins, newest first (as the API returns them). */
   checkIns: CheckIn[];
-}
+};
 
 /** The last seven check-ins, plus the average sleep over the last fourteen. */
 export function PastWeekTable({ checkIns }: PastWeekTableProps) {
@@ -45,14 +44,12 @@ export function PastWeekTable({ checkIns }: PastWeekTableProps) {
               >
                 {pastWeek.map((checkIn) => (
                   <Table.Row key={checkIn.id} id={checkIn.id}>
-                    <Table.Cell>
-                      {format(parseISO(checkIn.date), "MMM dd yyyy")}
-                    </Table.Cell>
+                    <Table.Cell>{formatDate(checkIn.date)}</Table.Cell>
                     <Table.Cell className="text-end">
                       {hours(checkIn.sleepMinutes)}
                     </Table.Cell>
                     <Table.Cell className="text-end">
-                      <RatingChip value={checkIn.soreness} />
+                      <RatingChip value={checkIn.soreness} reverse />
                     </Table.Cell>
                     <Table.Cell className="text-end">
                       <RatingChip value={checkIn.mood} />
@@ -61,7 +58,7 @@ export function PastWeekTable({ checkIns }: PastWeekTableProps) {
                       <RatingChip value={checkIn.energy} />
                     </Table.Cell>
                     <Table.Cell className="text-end">
-                      <RatingChip value={checkIn.stress} />
+                      <RatingChip value={checkIn.stress} reverse />
                     </Table.Cell>
                   </Table.Row>
                 ))}

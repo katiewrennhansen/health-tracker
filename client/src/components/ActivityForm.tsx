@@ -27,10 +27,10 @@ function today(): string {
   return new Date().toLocaleDateString("en-CA");
 }
 
-interface ActivityFormProps {
+type ActivityFormProps = {
   activity?: Activity;
   onSaved: () => void;
-}
+};
 
 /** Logs a new activity or edits an existing one. Validates with the same shared schema the server uses. */
 export function ActivityForm({ activity, onSaved }: ActivityFormProps) {

@@ -64,6 +64,8 @@ Inside the client, import from `client/src` with the `@/` alias (`@/components/A
 - **Conditional class names use `clsx`.** Combine Tailwind classes with `clsx("base classes", isActive && "bg-accent-soft", isExpanded ? "w-64" : "w-18")`, not template strings with `${...}`. Plain static class names stay as a string.
 - **Client data flow.** All fetching goes through TanStack Query hooks. Any activity or event mutation invalidates the advice query.
 - TypeScript is strict; do not use `any` or `@ts-ignore` to get past errors.
+- Reference patterns that exist in the codebase already for future architechture. If you are going to implement a new pattern always consult the documentation and confirm with developer.
+- Always consult Typescript, Tanstack Query, Hero UI, Tailwind, React, Express, Drizzle and SQL best practices and docs before making large changes.
 
 ## UI design
 

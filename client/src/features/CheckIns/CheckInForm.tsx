@@ -14,6 +14,7 @@ import { useCheckInsMutation } from "@/queries/useCheckInsMutations";
 import { Button } from "@/ui/Button";
 import { useCheckIns } from "@/queries/useCheckIns";
 import { today } from "@/utils/utils";
+import { CheckInBanner } from "./CheckInBanner";
 
 const defaultValues: CheckInInput = {
   date: today(),
@@ -45,13 +46,13 @@ export function CheckInForm() {
   };
 
   if (todayCheckIn) {
-    return null;
+    return <CheckInBanner />;
   }
 
   return (
     <Card className="rounded-sm">
       <form
-        className="flex flex-col gap-6"
+        className="flex flex-col gap-4"
         noValidate
         onSubmit={handleSubmit(onSubmit)}
       >
@@ -73,7 +74,7 @@ export function CheckInForm() {
               className="flex flex-row flex-wrap items-center justify-between gap-3"
             >
               <Label className="font-semibold">Hours slept last night</Label>
-              <NumberField.Group className="w-40">
+              <NumberField.Group className="w-34">
                 <NumberField.DecrementButton />
                 <NumberField.Input />
                 <NumberField.IncrementButton />
@@ -85,7 +86,7 @@ export function CheckInForm() {
 
         <Separator />
 
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2">
           <Controller
             control={control}
             name="soreness"
