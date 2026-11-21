@@ -14,7 +14,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { DatePickerField } from "@/features/LogEvents/DatePickerField";
+import { DatePickerField } from "@/ui/DatePickerField";
 import { FormActions } from "@/features/LogEvents/FormActions";
 import { useActivitiesMutation } from "@/queries/useActivitiesMutation";
 import { today } from "@/utils/utils";
