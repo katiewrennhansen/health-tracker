@@ -7,7 +7,13 @@ import { router } from "@/router";
 import "@/index.css";
 import { Toast } from "@heroui/react";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+    },
+  },
+});
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {

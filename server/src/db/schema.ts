@@ -6,6 +6,7 @@ import {
   text,
   timestamp,
   date,
+  index,
   uuid,
   unique,
 } from "drizzle-orm/pg-core";
@@ -39,6 +40,8 @@ export const activities = pgTable(
       .$onUpdate(() => new Date()),
   },
   (t) => [
+    // Serves "this user's activities, newest first".
+    index("activities_user_date_idx").on(t.userId, t.date),
     check(
       "activities_duration_minutes_check",
       sql`${t.durationMinutes} BETWEEN 1 AND 1440`,
@@ -77,6 +80,7 @@ export const injuries = pgTable(
       .$onUpdate(() => new Date()),
   },
   (t) => [
+    index("injuries_user_start_date_idx").on(t.userId, t.startDate),
     check("injuries_dates_check", sql`${t.endDate} >= ${t.startDate}`),
     check("injuries_severity_check", sql`${t.severity} BETWEEN 1 AND 10`),
   ],
@@ -115,7 +119,10 @@ export const illnesses = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (t) => [check("illnesses_dates_check", sql`${t.endDate} >= ${t.startDate}`)],
+  (t) => [
+    index("illnesses_user_start_date_idx").on(t.userId, t.startDate),
+    check("illnesses_dates_check", sql`${t.endDate} >= ${t.startDate}`),
+  ],
 );
 
 export const travel = pgTable(
@@ -137,7 +144,10 @@ export const travel = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (t) => [check("travel_dates_check", sql`${t.endDate} >= ${t.startDate}`)],
+  (t) => [
+    index("travel_user_start_date_idx").on(t.userId, t.startDate),
+    check("travel_dates_check", sql`${t.endDate} >= ${t.startDate}`),
+  ],
 );
 
 export const alcohol = pgTable(
@@ -155,7 +165,10 @@ export const alcohol = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (t) => [check("alcohol_drinks_check", sql`${t.drinks} BETWEEN 1 AND 50`)],
+  (t) => [
+    index("alcohol_user_date_idx").on(t.userId, t.date),
+    check("alcohol_drinks_check", sql`${t.drinks} BETWEEN 1 AND 50`),
+  ],
 );
 
 export const dailyCheckins = pgTable(

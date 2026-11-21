@@ -43,6 +43,13 @@
       "when": 1795286176513,
       "tag": "0005_create_alcohol",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795287514216,
+      "tag": "0006_add_user_date_indexes",
+      "breakpoints": true
     }
   ]
 }
