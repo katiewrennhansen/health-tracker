@@ -11,7 +11,7 @@ import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { type Choice, ChoiceField } from "@/features/LogEvents/ChoiceField";
 import { DatePickerField } from "@/ui/DatePickerField";
-import { FormActions } from "@/features/LogEvents/FormActions";
+import { Button } from "@/ui/Button";
 import { today } from "@/utils/utils";
 
 const severityOptions: readonly Choice<IllnessSeverity>[] = [
@@ -171,7 +171,15 @@ export function IllnessForm() {
         </Alert.Content>
       </Alert>
 
-      <FormActions submitLabel="Save illness" isSubmitting={isSubmitting} />
+      <div className="flex justify-end gap-3">
+        <Button
+          type="submit"
+          isDisabled={isSubmitting}
+          isLoading={isSubmitting}
+        >
+          Save illness
+        </Button>
+      </div>
     </form>
   );
 }

@@ -15,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { DatePickerField } from "@/ui/DatePickerField";
-import { FormActions } from "@/features/LogEvents/FormActions";
+import { Button } from "@/ui/Button";
 import { useActivitiesMutation } from "@/queries/useActivitiesMutation";
 import { today } from "@/utils/utils";
 
@@ -161,7 +161,15 @@ export function WorkoutForm() {
         />
       </div>
 
-      <FormActions submitLabel="Save workout" isSubmitting={isSubmitting} />
+      <div className="flex justify-end gap-3">
+        <Button
+          type="submit"
+          isDisabled={isSubmitting}
+          isLoading={isSubmitting}
+        >
+          Save workout
+        </Button>
+      </div>
     </form>
   );
 }
