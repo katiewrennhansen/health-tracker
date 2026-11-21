@@ -3,6 +3,7 @@ import { sql } from "drizzle-orm";
 import express from "express";
 import activitiesRouter from "./api/activities.ts";
 import checkInsRouter from "./api/check-ins.ts";
+import illnessesRouter from "./api/illnesses.ts";
 import injuriesRouter from "./api/injuries.ts";
 import { db } from "./db/client.ts";
 import { requireSignedIn } from "./middleware/auth.ts";
@@ -35,6 +36,7 @@ export function createApp() {
   );
   app.use("/api/activities", activitiesRouter);
   app.use("/api/check-ins", checkInsRouter);
+  app.use("/api/illnesses", illnessesRouter);
   app.use("/api/injuries", injuriesRouter);
   app.use(notFoundHandler);
   app.use(errorHandler);
