@@ -80,13 +80,13 @@ export function EventTypePicker({ value, onChange }: EventTypePickerProps) {
         isDetached
         selectedKeys={new Set([value])}
         onSelectionChange={handleSelectionChange}
-        className="grid grid-cols-1 gap-3  lg:grid-cols-5 items-stretch"
+        className="grid grid-cols-1 gap-3 lg:grid-cols-5 items-stretch"
       >
         {eventTypes.map(({ value: type, title, description, icon: Icon }) => (
           <ToggleButton
             key={type}
             id={type}
-            className="text-left flex w-full h-auto flex-col items-start  gap-1 bg-white rounded-sm border border-border p-3 whitespace-normal data-selected:border-accent data-selected:bg-accent-soft data-selected:text-accent-soft-foreground"
+            className="text-left flex w-full h-auto flex-col items-start justify-start gap-1 bg-white rounded-sm border border-border p-3 whitespace-normal data-selected:border-accent data-selected:bg-accent-soft data-selected:text-accent-soft-foreground"
           >
             <Icon className="mb-1 size-5 self-start" aria-hidden />
             <span className="font-semibold">{title}</span>

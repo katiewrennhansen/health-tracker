@@ -9,6 +9,8 @@ const generateIllnessSelect = (i: typeof illnesses) => ({
   endDate: i.endDate,
   severity: i.severity,
   symptoms: i.symptoms,
+  createdAt: i.createdAt,
+  updatedAt: i.updatedAt,
 });
 
 export function getIllnesses(userId: string) {

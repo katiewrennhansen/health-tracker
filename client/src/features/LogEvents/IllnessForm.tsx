@@ -37,12 +37,8 @@ const defaultValues = {
   symptoms: [] as IllnessSymptom[],
 };
 
-type IllnessFormProps = {
-  onSubmit: (values: IllnessInput) => void | Promise<void>;
-};
-
 /** Logs an illness: when it started and ended, how bad it was, and the symptoms. */
-export function IllnessForm({ onSubmit }: IllnessFormProps) {
+export function IllnessForm() {
   const {
     control,
     handleSubmit,
@@ -52,6 +48,10 @@ export function IllnessForm({ onSubmit }: IllnessFormProps) {
     resolver: zodResolver(illnessInputSchema),
     defaultValues: defaultValues,
   });
+
+  const onSubmit = (values: IllnessInput) => {
+    console.log(values);
+  };
 
   // Clear the form after a successful save (react-hook-form recommends this over resetting inside onSubmit).
   useEffect(() => {

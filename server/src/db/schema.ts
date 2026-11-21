@@ -57,7 +57,7 @@ export const bodyArea = pgEnum("body_area", [
   "foot",
   "wrist",
   "other",
-] as const);
+]);
 
 export const injuries = pgTable(
   "injuries",
@@ -138,6 +138,24 @@ export const travel = pgTable(
       .$onUpdate(() => new Date()),
   },
   (t) => [check("travel_dates_check", sql`${t.endDate} >= ${t.startDate}`)],
+);
+
+export const alcohol = pgTable(
+  "alcohol",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id").notNull(),
+    date: date("date", { mode: "string" }).notNull(), // stays 'YYYY-MM-DD'
+    drinks: integer("drinks").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (t) => [check("alcohol_drinks_check", sql`${t.drinks} BETWEEN 1 AND 50`)],
 );
 
 export const dailyCheckins = pgTable(

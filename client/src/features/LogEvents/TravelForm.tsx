@@ -14,12 +14,8 @@ import { DatePickerField } from "@/features/LogEvents/DatePickerField";
 import { FormActions } from "@/features/LogEvents/FormActions";
 import { today } from "@/utils/utils";
 
-type TravelFormProps = {
-  onSubmit: (values: TravelInput) => void | Promise<void>;
-};
-
 /** Logs a trip: where, when, and the altitude and time zone change that affect training. */
-export function TravelForm({ onSubmit }: TravelFormProps) {
+export function TravelForm() {
   const {
     control,
     handleSubmit,
@@ -36,6 +32,10 @@ export function TravelForm({ onSubmit }: TravelFormProps) {
       notes: null,
     },
   });
+
+  const onSubmit = (values: TravelInput) => {
+    console.log(values);
+  };
 
   // Clear the form after a successful save (react-hook-form recommends this over resetting inside onSubmit).
   useEffect(() => {

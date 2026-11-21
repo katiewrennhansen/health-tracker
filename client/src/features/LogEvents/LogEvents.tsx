@@ -11,11 +11,6 @@ import { InjuryForm } from "@/features/LogEvents/InjuryForm";
 import { TravelForm } from "@/features/LogEvents/TravelForm";
 import { WorkoutForm } from "@/features/LogEvents/WorkoutForm";
 
-/** Placeholder until the event endpoints exist: the forms validate, but nothing is saved yet. */
-const notSavedYet = () => {
-  toast("Saving events isn't connected yet");
-};
-
 /**
  * Log page: pick what happened, then fill in that event's form. Each event type has its own form
  * (and its own `useForm`), so switching type starts that form fresh.
@@ -36,10 +31,10 @@ export function LogEvents() {
         <Card.Content className="flex flex-col gap-6">
           <EventTypePicker value={eventType} onChange={setEventType} />
           {eventType === "workout" && <WorkoutForm />}
-          {eventType === "alcohol" && <AlcoholForm onSubmit={notSavedYet} />}
-          {eventType === "illness" && <IllnessForm onSubmit={notSavedYet} />}
+          {eventType === "alcohol" && <AlcoholForm />}
+          {eventType === "illness" && <IllnessForm />}
           {eventType === "injury" && <InjuryForm />}
-          {eventType === "travel" && <TravelForm onSubmit={notSavedYet} />}
+          {eventType === "travel" && <TravelForm />}
         </Card.Content>
       </Card>
     </section>

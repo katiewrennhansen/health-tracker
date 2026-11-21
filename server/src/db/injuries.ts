@@ -5,7 +5,6 @@ import type { InjuryInput } from "@health-tracker/shared";
 
 const generateInjurySelect = (i: typeof injuries) => ({
   id: i.id,
-  userId: i.userId,
   startDate: i.startDate,
   endDate: i.endDate,
   bodyArea: i.bodyArea,

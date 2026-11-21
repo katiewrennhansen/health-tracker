@@ -3,7 +3,7 @@ import { injuryListSchema } from "@health-tracker/shared";
 import { useQuery } from "@tanstack/react-query";
 import { useApi } from "@/queries/useApi";
 
-export const injuriesQueryKey = ["injuries"] as const;
+export const injuriesQueryKey = ["injuries"];
 
 export function useInjuries() {
   const { userId } = useAuth();

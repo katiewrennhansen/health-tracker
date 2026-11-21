@@ -1,18 +1,16 @@
 import { type AlcoholInput, alcoholInputSchema } from "@health-tracker/shared";
-import { FieldError, Label, NumberField } from "@heroui/react";
+import { FieldError, Label, NumberField, toast } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { DatePickerField } from "@/features/LogEvents/DatePickerField";
 import { FormActions } from "@/features/LogEvents/FormActions";
 import { today } from "@/utils/utils";
-
-type AlcoholFormProps = {
-  onSubmit: (values: AlcoholInput) => void | Promise<void>;
-};
+import { useAlcoholMutations } from "@/queries/useAlcoholMutations";
 
 /** Logs how many drinks the user had on a day. */
-export function AlcoholForm({ onSubmit }: AlcoholFormProps) {
+export function AlcoholForm() {
+  const { createAlcohol } = useAlcoholMutations();
   const {
     control,
     handleSubmit,
@@ -20,10 +18,18 @@ export function AlcoholForm({ onSubmit }: AlcoholFormProps) {
     formState: { isSubmitting, isSubmitSuccessful },
   } = useForm<AlcoholInput>({
     resolver: zodResolver(alcoholInputSchema),
-    defaultValues: { date: today(), drinks: 1 },
+    defaultValues: { date: today(), drinks: 0 },
   });
 
-  // Clear the form after a successful save (react-hook-form recommends this over resetting inside onSubmit).
+  const onSubmit = async (values: AlcoholInput) => {
+    try {
+      await createAlcohol.mutateAsync(values);
+      toast.success("Alcohol entry saved successfully");
+    } catch {
+      toast.danger("Failed to save alcohol entry");
+    }
+  };
+
   useEffect(() => {
     if (isSubmitSuccessful) reset();
   }, [isSubmitSuccessful, reset]);

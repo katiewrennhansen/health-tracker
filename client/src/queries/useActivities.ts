@@ -3,7 +3,7 @@ import { activityListSchema } from "@health-tracker/shared";
 import { useQuery } from "@tanstack/react-query";
 import { useApi } from "@/queries/useApi";
 
-export const activitiesQueryKey = ["activities"] as const;
+export const activitiesQueryKey = ["activities"];
 
 export function useActivities() {
   const { userId } = useAuth();

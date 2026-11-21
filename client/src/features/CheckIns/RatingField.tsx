@@ -1,6 +1,6 @@
 import { Label, ToggleButton, ToggleButtonGroup } from "@heroui/react";
 
-const ratings = [1, 2, 3, 4, 5] as const;
+const ratings = [1, 2, 3, 4, 5];
 
 type RatingFieldProps = {
   label: string;
