@@ -1,0 +1,1 @@
+ALTER TABLE "illnesses" ALTER COLUMN "end_date" DROP NOT NULL;

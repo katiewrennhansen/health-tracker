@@ -3,20 +3,25 @@ import {
   bodyAreaSchema,
   injuryInputSchema,
 } from "@health-tracker/shared";
-import { FieldError, Label, ListBox, NumberField, Select } from "@heroui/react";
+import {
+  FieldError,
+  Label,
+  ListBox,
+  NumberField,
+  Select,
+  toast,
+} from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { DatePickerField } from "@/features/LogEvents/DatePickerField";
 import { FormActions } from "@/features/LogEvents/FormActions";
 import { today } from "@/utils/utils";
-
-type InjuryFormProps = {
-  onSubmit: (values: InjuryInput) => void | Promise<void>;
-};
+import { useInjuriesMutations } from "@/queries/useInjuriesMutations";
 
 /** Logs an injury: where it is, how bad it is, and when it started (and ended, once healed). */
-export function InjuryForm({ onSubmit }: InjuryFormProps) {
+export function InjuryForm() {
+  const { createInjury } = useInjuriesMutations();
   const {
     control,
     handleSubmit,
@@ -27,6 +32,15 @@ export function InjuryForm({ onSubmit }: InjuryFormProps) {
     // No body area is picked to start with, so the user has to choose one; the Select shows it as empty.
     defaultValues: { startDate: today(), endDate: null, severity: 3 },
   });
+
+  const onSubmit = async (values: InjuryInput) => {
+    try {
+      await createInjury.mutateAsync(values);
+      toast.success("Injury logged successfully");
+    } catch {
+      toast.danger("Failed to log injury");
+    }
+  };
 
   // Clear the form after a successful save (react-hook-form recommends this over resetting inside onSubmit).
   useEffect(() => {

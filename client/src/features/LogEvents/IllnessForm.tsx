@@ -5,13 +5,7 @@ import {
   illnessInputSchema,
   illnessSymptomSchema,
 } from "@health-tracker/shared";
-import {
-  Alert,
-  Checkbox,
-  CheckboxGroup,
-  FieldError,
-  Label,
-} from "@heroui/react";
+import { Alert, FieldError, Label, ListBox, Select } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -36,6 +30,13 @@ const symptomLabels: Record<IllnessSymptom, string> = {
   other: "Other",
 };
 
+const defaultValues = {
+  startDate: today(),
+  endDate: null,
+  severity: "mild" as IllnessSeverity,
+  symptoms: [] as IllnessSymptom[],
+};
+
 type IllnessFormProps = {
   onSubmit: (values: IllnessInput) => void | Promise<void>;
 };
@@ -49,12 +50,7 @@ export function IllnessForm({ onSubmit }: IllnessFormProps) {
     formState: { isSubmitting, isSubmitSuccessful },
   } = useForm<IllnessInput>({
     resolver: zodResolver(illnessInputSchema),
-    defaultValues: {
-      startDate: today(),
-      endDate: today(),
-      severity: "mild",
-      symptoms: [],
-    },
+    defaultValues: defaultValues,
   });
 
   // Clear the form after a successful save (react-hook-form recommends this over resetting inside onSubmit).
@@ -89,11 +85,18 @@ export function IllnessForm({ onSubmit }: IllnessFormProps) {
           name="endDate"
           render={({ field, fieldState }) => (
             <DatePickerField
-              label="Ended"
+              label={
+                <>
+                  Ended{" "}
+                  <span className="font-normal text-muted">
+                    (leave empty if still ill)
+                  </span>
+                </>
+              }
               calendarLabel="End date"
               name={field.name}
               value={field.value}
-              onChange={(value) => field.onChange(value ?? "")}
+              onChange={field.onChange}
               onBlur={field.onBlur}
               errorMessage={fieldState.error?.message}
             />
@@ -118,34 +121,43 @@ export function IllnessForm({ onSubmit }: IllnessFormProps) {
           control={control}
           name="symptoms"
           render={({ field, fieldState }) => (
-            <CheckboxGroup
+            <Select
+              selectionMode="multiple"
               name={field.name}
               value={field.value}
               // Rebuild the list from the known symptoms, so the form only ever holds valid values.
-              onChange={(values) =>
+              onChange={(keys) =>
                 field.onChange(
                   illnessSymptomSchema.options.filter((symptom) =>
-                    values.includes(symptom),
+                    keys.includes(symptom),
                   ),
                 )
               }
               onBlur={field.onBlur}
               isInvalid={Boolean(fieldState.error)}
-              className="flex flex-col gap-2"
+              placeholder="Choose symptoms"
             >
               <Label>Symptoms</Label>
-              {illnessSymptomSchema.options.map((symptom) => (
-                <Checkbox key={symptom} value={symptom}>
-                  <Checkbox.Content>
-                    <Checkbox.Control>
-                      <Checkbox.Indicator />
-                    </Checkbox.Control>
-                    <Label>{symptomLabels[symptom]}</Label>
-                  </Checkbox.Content>
-                </Checkbox>
-              ))}
+              <Select.Trigger>
+                <Select.Value />
+                <Select.Indicator />
+              </Select.Trigger>
+              <Select.Popover>
+                <ListBox>
+                  {illnessSymptomSchema.options.map((symptom) => (
+                    <ListBox.Item
+                      key={symptom}
+                      id={symptom}
+                      textValue={symptomLabels[symptom]}
+                    >
+                      {symptomLabels[symptom]}
+                      <ListBox.ItemIndicator />
+                    </ListBox.Item>
+                  ))}
+                </ListBox>
+              </Select.Popover>
               <FieldError>{fieldState.error?.message}</FieldError>
-            </CheckboxGroup>
+            </Select>
           )}
         />
       </div>

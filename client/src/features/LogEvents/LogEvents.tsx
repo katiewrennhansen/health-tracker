@@ -9,6 +9,7 @@ import {
 import { IllnessForm } from "@/features/LogEvents/IllnessForm";
 import { InjuryForm } from "@/features/LogEvents/InjuryForm";
 import { TravelForm } from "@/features/LogEvents/TravelForm";
+import { WorkoutForm } from "@/features/LogEvents/WorkoutForm";
 
 /** Placeholder until the event endpoints exist: the forms validate, but nothing is saved yet. */
 const notSavedYet = () => {
@@ -20,7 +21,7 @@ const notSavedYet = () => {
  * (and its own `useForm`), so switching type starts that form fresh.
  */
 export function LogEvents() {
-  const [eventType, setEventType] = useState<EventType>("illness");
+  const [eventType, setEventType] = useState<EventType>("workout");
 
   return (
     <section className="flex flex-col gap-6">
@@ -28,15 +29,16 @@ export function LogEvents() {
         <p className="text-sm text-muted">
           {format(new Date(), "EEEE, MMMM d")}
         </p>
-        <h1 className="text-3xl font-bold">Log</h1>
+        <h1 className="text-3xl font-bold">Log Events</h1>
       </header>
 
       <Card className="rounded-sm">
         <Card.Content className="flex flex-col gap-6">
           <EventTypePicker value={eventType} onChange={setEventType} />
+          {eventType === "workout" && <WorkoutForm />}
           {eventType === "alcohol" && <AlcoholForm onSubmit={notSavedYet} />}
           {eventType === "illness" && <IllnessForm onSubmit={notSavedYet} />}
-          {eventType === "injury" && <InjuryForm onSubmit={notSavedYet} />}
+          {eventType === "injury" && <InjuryForm />}
           {eventType === "travel" && <TravelForm onSubmit={notSavedYet} />}
         </Card.Content>
       </Card>

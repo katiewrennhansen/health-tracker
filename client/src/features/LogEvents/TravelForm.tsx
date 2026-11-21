@@ -14,10 +14,6 @@ import { DatePickerField } from "@/features/LogEvents/DatePickerField";
 import { FormActions } from "@/features/LogEvents/FormActions";
 import { today } from "@/utils/utils";
 
-/** NumberField reports an empty input as NaN; the form stores that as `null`. */
-const toNullableNumber = (value: number) =>
-  Number.isNaN(value) ? null : value;
-
 type TravelFormProps = {
   onSubmit: (values: TravelInput) => void | Promise<void>;
 };
@@ -118,8 +114,8 @@ export function TravelForm({ onSubmit }: TravelFormProps) {
             <NumberField
               name={field.name}
               // NaN shows an empty input for a `null` value.
-              value={field.value ?? NaN}
-              onChange={(value) => field.onChange(toNullableNumber(value))}
+              value={field.value ?? 0}
+              onChange={(value) => field.onChange(value)}
               onBlur={field.onBlur}
               step={100}
               commitBehavior="validate"
@@ -144,8 +140,8 @@ export function TravelForm({ onSubmit }: TravelFormProps) {
           render={({ field, fieldState }) => (
             <NumberField
               name={field.name}
-              value={field.value ?? NaN}
-              onChange={(value) => field.onChange(toNullableNumber(value))}
+              value={field.value ?? 0}
+              onChange={(value) => field.onChange(value)}
               onBlur={field.onBlur}
               commitBehavior="validate"
               // Show a "+" on eastward shifts, e.g. "+5".

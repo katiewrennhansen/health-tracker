@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { injuriesQueryKey } from "@/queries/useInjuries";
 import { useApi } from "@/queries/useApi";
 
-export function useInjuriesMutation() {
+export function useInjuriesMutations() {
   const api = useApi();
   const queryClient = useQueryClient();
 

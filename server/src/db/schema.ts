@@ -104,7 +104,7 @@ export const illnesses = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     userId: text("user_id").notNull(),
     startDate: date("start_date", { mode: "string" }).notNull(),
-    endDate: date("end_date", { mode: "string" }).notNull(),
+    endDate: date("end_date", { mode: "string" }), // null while the illness is ongoing
     severity: illnessSeverity("severity").notNull(),
     symptoms: illnessSymptom("symptoms").array().notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })

@@ -23,7 +23,8 @@ export const illnessSymptomSchema = z.enum([
 /** The illness fields a user sends. Matches the `illnesses` table's columns and checks. */
 const illnessFieldsSchema = z.strictObject({
   startDate: isoDateSchema,
-  endDate: isoDateSchema,
+  /** `null` while the illness is ongoing. */
+  endDate: isoDateSchema.nullable(),
   severity: illnessSeveritySchema,
   symptoms: z
     .array(illnessSymptomSchema)

@@ -1,5 +1,6 @@
 import {
   BeakerIcon,
+  BoltIcon,
   FaceFrownIcon,
   GlobeAltIcon,
   PlusCircleIcon,
@@ -12,7 +13,7 @@ import {
 } from "@heroui/react";
 import { type ComponentType, type SVGProps, useId } from "react";
 
-export type EventType = "alcohol" | "illness" | "injury" | "travel";
+export type EventType = "workout" | "alcohol" | "illness" | "injury" | "travel";
 
 type EventTypeOption = {
   value: EventType;
@@ -22,6 +23,12 @@ type EventTypeOption = {
 };
 
 const eventTypes: readonly EventTypeOption[] = [
+  {
+    value: "workout",
+    title: "Workout",
+    description: "Run, ride, lift and more",
+    icon: BoltIcon,
+  },
   {
     value: "alcohol",
     title: "Alcohol",
@@ -73,7 +80,7 @@ export function EventTypePicker({ value, onChange }: EventTypePickerProps) {
         isDetached
         selectedKeys={new Set([value])}
         onSelectionChange={handleSelectionChange}
-        className="grid grid-cols-2 gap-3 sm:grid-cols-4"
+        className="grid grid-cols-1 gap-3  lg:grid-cols-5 items-stretch"
       >
         {eventTypes.map(({ value: type, title, description, icon: Icon }) => (
           <ToggleButton
