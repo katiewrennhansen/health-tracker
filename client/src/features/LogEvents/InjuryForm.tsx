@@ -3,17 +3,11 @@ import {
   bodyAreaSchema,
   injuryInputSchema,
 } from "@health-tracker/shared";
-import {
-  FieldError,
-  Label,
-  ListBox,
-  NumberField,
-  Select,
-  toast,
-} from "@heroui/react";
+import { FieldError, Label, ListBox, Select, toast } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { NumberField } from "@/ui/NumberField";
 import { DatePickerField } from "@/ui/DatePickerField";
 import { Button } from "@/ui/Button";
 import { today } from "@/utils/utils";
@@ -107,7 +101,7 @@ export function InjuryForm() {
                 if (area) field.onChange(area);
               }}
               onBlur={field.onBlur}
-              isInvalid={Boolean(fieldState.error)}
+              isInvalid={!!fieldState.error}
               placeholder="Choose a body area"
             >
               <Label>Body area</Label>
@@ -140,18 +134,9 @@ export function InjuryForm() {
               onBlur={field.onBlur}
               minValue={1}
               maxValue={10}
-              // Keep out-of-range values (instead of clamping) so Zod shows the error.
-              commitBehavior="validate"
-              isInvalid={Boolean(fieldState.error)}
-            >
-              <Label>Severity (1–10)</Label>
-              <NumberField.Group>
-                <NumberField.DecrementButton />
-                <NumberField.Input />
-                <NumberField.IncrementButton />
-              </NumberField.Group>
-              <FieldError>{fieldState.error?.message}</FieldError>
-            </NumberField>
+              label="Severity (1–10)"
+              errorMessage={fieldState.error?.message}
+            />
           )}
         />
       </div>

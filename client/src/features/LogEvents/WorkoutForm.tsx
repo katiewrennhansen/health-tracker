@@ -3,17 +3,11 @@ import {
   activityInputSchema,
   activityTypeSchema,
 } from "@health-tracker/shared";
-import {
-  FieldError,
-  Label,
-  ListBox,
-  NumberField,
-  Select,
-  toast,
-} from "@heroui/react";
+import { FieldError, Label, ListBox, Select, toast } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { NumberField } from "@/ui/NumberField";
 import { DatePickerField } from "@/ui/DatePickerField";
 import { Button } from "@/ui/Button";
 import { useActivitiesMutation } from "@/queries/useActivitiesMutations";
@@ -85,7 +79,7 @@ export function WorkoutForm() {
                 if (type) field.onChange(type);
               }}
               onBlur={field.onBlur}
-              isInvalid={Boolean(fieldState.error)}
+              isInvalid={!!fieldState.error}
             >
               <Label>Type</Label>
               <Select.Trigger>
@@ -121,18 +115,9 @@ export function WorkoutForm() {
               minValue={1}
               maxValue={1440}
               step={5}
-              // Keep out-of-range values (instead of clamping) so Zod shows the error.
-              commitBehavior="validate"
-              isInvalid={Boolean(fieldState.error)}
-            >
-              <Label>Duration (minutes)</Label>
-              <NumberField.Group>
-                <NumberField.DecrementButton />
-                <NumberField.Input />
-                <NumberField.IncrementButton />
-              </NumberField.Group>
-              <FieldError>{fieldState.error?.message}</FieldError>
-            </NumberField>
+              label="Duration (minutes)"
+              errorMessage={fieldState.error?.message}
+            />
           )}
         />
         <Controller
@@ -146,17 +131,9 @@ export function WorkoutForm() {
               onBlur={field.onBlur}
               minValue={1}
               maxValue={10}
-              commitBehavior="validate"
-              isInvalid={Boolean(fieldState.error)}
-            >
-              <Label>Effort (1–10)</Label>
-              <NumberField.Group>
-                <NumberField.DecrementButton />
-                <NumberField.Input />
-                <NumberField.IncrementButton />
-              </NumberField.Group>
-              <FieldError>{fieldState.error?.message}</FieldError>
-            </NumberField>
+              label="Effort (1–10)"
+              errorMessage={fieldState.error?.message}
+            />
           )}
         />
       </div>

@@ -11,7 +11,7 @@ export function useInjuries() {
 
   return useQuery({
     queryKey: [...injuriesQueryKey, userId],
-    enabled: Boolean(userId),
+    enabled: !!userId,
     queryFn: () => api("/injuries", { schema: injuryListSchema }),
   });
 }

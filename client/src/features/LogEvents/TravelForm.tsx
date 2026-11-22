@@ -3,7 +3,6 @@ import {
   FieldError,
   Input,
   Label,
-  NumberField,
   TextArea,
   TextField,
   toast,
@@ -11,6 +10,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { NumberField } from "@/ui/NumberField";
 import { DatePickerField } from "@/ui/DatePickerField";
 import { Button } from "@/ui/Button";
 import { today } from "@/utils/utils";
@@ -65,7 +65,7 @@ export function TravelForm() {
             value={field.value}
             onChange={field.onChange}
             onBlur={field.onBlur}
-            isInvalid={Boolean(fieldState.error)}
+            isInvalid={!!fieldState.error}
           >
             <Label>Destination</Label>
             <Input placeholder="e.g. Denver" />
@@ -126,20 +126,14 @@ export function TravelForm() {
               onChange={(value) => field.onChange(value)}
               onBlur={field.onBlur}
               step={100}
-              commitBehavior="validate"
-              isInvalid={Boolean(fieldState.error)}
-            >
-              <Label>
-                Altitude (m){" "}
-                <span className="font-normal text-muted">(optional)</span>
-              </Label>
-              <NumberField.Group>
-                <NumberField.DecrementButton />
-                <NumberField.Input />
-                <NumberField.IncrementButton />
-              </NumberField.Group>
-              <FieldError>{fieldState.error?.message}</FieldError>
-            </NumberField>
+              label={
+                <>
+                  Altitude (m){" "}
+                  <span className="font-normal text-muted">(optional)</span>
+                </>
+              }
+              errorMessage={fieldState.error?.message}
+            />
           )}
         />
         <Controller
@@ -151,22 +145,16 @@ export function TravelForm() {
               value={field.value ?? 0}
               onChange={(value) => field.onChange(value)}
               onBlur={field.onBlur}
-              commitBehavior="validate"
               // Show a "+" on eastward shifts, e.g. "+5".
               formatOptions={{ signDisplay: "exceptZero" }}
-              isInvalid={Boolean(fieldState.error)}
-            >
-              <Label>
-                Time zone change (hours){" "}
-                <span className="font-normal text-muted">(optional)</span>
-              </Label>
-              <NumberField.Group>
-                <NumberField.DecrementButton />
-                <NumberField.Input />
-                <NumberField.IncrementButton />
-              </NumberField.Group>
-              <FieldError>{fieldState.error?.message}</FieldError>
-            </NumberField>
+              label={
+                <>
+                  Time zone change (hours){" "}
+                  <span className="font-normal text-muted">(optional)</span>
+                </>
+              }
+              errorMessage={fieldState.error?.message}
+            />
           )}
         />
       </div>
@@ -181,7 +169,7 @@ export function TravelForm() {
             // An empty box is stored as `null`, matching the nullable `notes` column.
             onChange={(value) => field.onChange(value === "" ? null : value)}
             onBlur={field.onBlur}
-            isInvalid={Boolean(fieldState.error)}
+            isInvalid={!!fieldState.error}
           >
             <Label>
               Notes <span className="font-normal text-muted">(optional)</span>

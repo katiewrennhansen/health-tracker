@@ -11,7 +11,7 @@ export function useAlcohol() {
 
   return useQuery({
     queryKey: [...alcoholQueryKey, userId],
-    enabled: Boolean(userId),
+    enabled: !!userId,
     queryFn: () => api("/alcohol", { schema: alcoholListSchema }),
   });
 }

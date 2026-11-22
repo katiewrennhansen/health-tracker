@@ -1,8 +1,9 @@
 import { type AlcoholInput, alcoholInputSchema } from "@health-tracker/shared";
-import { FieldError, Label, NumberField, toast } from "@heroui/react";
+import { toast } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { NumberField } from "@/ui/NumberField";
 import { DatePickerField } from "@/ui/DatePickerField";
 import { Button } from "@/ui/Button";
 import { today } from "@/utils/utils";
@@ -67,18 +68,9 @@ export function AlcoholForm() {
               onBlur={field.onBlur}
               minValue={1}
               maxValue={50}
-              // Keep out-of-range values (instead of clamping) so Zod shows the error.
-              commitBehavior="validate"
-              isInvalid={Boolean(fieldState.error)}
-            >
-              <Label>Drinks</Label>
-              <NumberField.Group>
-                <NumberField.DecrementButton />
-                <NumberField.Input />
-                <NumberField.IncrementButton />
-              </NumberField.Group>
-              <FieldError>{fieldState.error?.message}</FieldError>
-            </NumberField>
+              label="Drinks"
+              errorMessage={fieldState.error?.message}
+            />
           )}
         />
       </div>

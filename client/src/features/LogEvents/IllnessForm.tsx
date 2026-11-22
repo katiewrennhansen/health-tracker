@@ -148,7 +148,7 @@ export function IllnessForm() {
                 )
               }
               onBlur={field.onBlur}
-              isInvalid={Boolean(fieldState.error)}
+              isInvalid={!!fieldState.error}
               placeholder="Choose symptoms"
             >
               <Label>Symptoms</Label>

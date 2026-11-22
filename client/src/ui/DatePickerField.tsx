@@ -39,7 +39,7 @@ export function DatePickerField({
       value={value ? parseDate(value) : null}
       onChange={(date) => onChange(date?.toString() ?? null)}
       onBlur={onBlur}
-      isInvalid={Boolean(errorMessage)}
+      isInvalid={!!errorMessage}
     >
       <Label>{label}</Label>
       <DateField.Group fullWidth>

@@ -11,7 +11,7 @@ export function useTravel() {
 
   return useQuery({
     queryKey: [...travelQueryKey, userId],
-    enabled: Boolean(userId),
+    enabled: !!userId,
     queryFn: () => api("/travel", { schema: travelListSchema }),
   });
 }

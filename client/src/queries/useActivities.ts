@@ -11,7 +11,7 @@ export function useActivities() {
 
   return useQuery({
     queryKey: [...activitiesQueryKey, userId],
-    enabled: Boolean(userId),
+    enabled: !!userId,
     queryFn: () => api("/activities", { schema: activityListSchema }),
   });
 }

@@ -1,13 +1,8 @@
 import { type CheckInInput, checkInInputSchema } from "@health-tracker/shared";
-import {
-  FieldError,
-  Label,
-  NumberField,
-  Separator,
-  toast,
-} from "@heroui/react";
+import { Separator, toast } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import { NumberField } from "@/ui/NumberField";
 import { RatingField } from "@/features/CheckIns/RatingField";
 import { useCheckInsMutation } from "@/queries/useCheckInsMutations";
 import { Button } from "@/ui/Button";
@@ -70,17 +65,12 @@ export function CheckInForm() {
               maxValue={24}
               step={0.1}
               formatOptions={{ maximumFractionDigits: 1 }}
-              isInvalid={Boolean(fieldState.error)}
               className="flex flex-row flex-wrap items-center justify-between gap-3"
-            >
-              <Label className="font-semibold">Hours slept last night</Label>
-              <NumberField.Group className="w-34">
-                <NumberField.DecrementButton />
-                <NumberField.Input />
-                <NumberField.IncrementButton />
-              </NumberField.Group>
-              <FieldError>{fieldState.error?.message}</FieldError>
-            </NumberField>
+              label="Hours slept last night"
+              labelClassName="font-semibold"
+              groupClassName="w-34"
+              errorMessage={fieldState.error?.message}
+            />
           )}
         />
 

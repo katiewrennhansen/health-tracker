@@ -11,7 +11,7 @@ export function useCheckIns() {
 
   return useQuery({
     queryKey: [...checkInsQueryKey, userId],
-    enabled: Boolean(userId),
+    enabled: !!userId,
     queryFn: () => api("/check-ins", { schema: checkInListSchema }),
   });
 }

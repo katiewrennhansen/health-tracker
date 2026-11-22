@@ -11,7 +11,7 @@ export function useIllnesses() {
 
   return useQuery({
     queryKey: [...illnessesQueryKey, userId],
-    enabled: Boolean(userId),
+    enabled: !!userId,
     queryFn: () => api("/illnesses", { schema: illnessListSchema }),
   });
 }

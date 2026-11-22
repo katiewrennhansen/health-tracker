@@ -13,12 +13,12 @@ import {
   FieldError,
   Label,
   ListBox,
-  NumberField,
   Select,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { parseDate } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
+import { NumberField } from "@/ui/NumberField";
 import { useActivitiesMutation } from "@/queries/useActivitiesMutations";
 import { Button } from "@/ui/Button";
 
@@ -106,7 +106,7 @@ export function ActivityForm({ activity, onSaved }: ActivityFormProps) {
               field.onChange(value?.toString() ?? "");
             }}
             onBlur={field.onBlur}
-            isInvalid={Boolean(fieldState.error)}
+            isInvalid={!!fieldState.error}
           >
             <Label>Date</Label>
             <DateField.Group fullWidth>
@@ -160,7 +160,7 @@ export function ActivityForm({ activity, onSaved }: ActivityFormProps) {
               field.onChange(key);
             }}
             onBlur={field.onBlur}
-            isInvalid={Boolean(fieldState.error)}
+            isInvalid={!!fieldState.error}
           >
             <Label>Type</Label>
             <Select.Trigger>
@@ -193,18 +193,9 @@ export function ActivityForm({ activity, onSaved }: ActivityFormProps) {
             onBlur={field.onBlur}
             minValue={1}
             maxValue={1440}
-            // Keep out-of-range values (instead of clamping) so Zod shows the error.
-            commitBehavior="validate"
-            isInvalid={Boolean(fieldState.error)}
-          >
-            <Label>Duration (minutes)</Label>
-            <NumberField.Group>
-              <NumberField.DecrementButton />
-              <NumberField.Input />
-              <NumberField.IncrementButton />
-            </NumberField.Group>
-            <FieldError>{fieldState.error?.message}</FieldError>
-          </NumberField>
+            label="Duration (minutes)"
+            errorMessage={fieldState.error?.message}
+          />
         )}
       />
 
@@ -219,17 +210,9 @@ export function ActivityForm({ activity, onSaved }: ActivityFormProps) {
             onBlur={field.onBlur}
             minValue={1}
             maxValue={10}
-            commitBehavior="validate"
-            isInvalid={Boolean(fieldState.error)}
-          >
-            <Label>Effort (1–10)</Label>
-            <NumberField.Group>
-              <NumberField.DecrementButton />
-              <NumberField.Input />
-              <NumberField.IncrementButton />
-            </NumberField.Group>
-            <FieldError>{fieldState.error?.message}</FieldError>
-          </NumberField>
+            label="Effort (1–10)"
+            errorMessage={fieldState.error?.message}
+          />
         )}
       />
 
