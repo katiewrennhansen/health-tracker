@@ -1,10 +1,14 @@
+import { Spinner } from "@heroui/react";
 import { ActivityModal } from "@/components/ActivityModal";
+import { TrainingLoadChart } from "@/features/Today/TrainingLoadChart";
+import { useActivities } from "@/queries/useActivities";
 import { Button } from "@/ui/Button";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 
 export function Today() {
   const [activityModalOpen, setActivityModalOpen] = useState(false);
+  const { data: activities = [], isPending, error } = useActivities();
 
   const handleAddActivityClick = () => {
     setActivityModalOpen(true);
@@ -32,6 +36,12 @@ export function Today() {
           Add activity
         </Button>
       </div>
+
+      {isPending && <Spinner />}
+      {error && (
+        <p className="text-danger">Unable to load your training load.</p>
+      )}
+      {!isPending && !error && <TrainingLoadChart activities={activities} />}
 
       {activityModalOpen && (
         <ActivityModal onClose={handleCloseActivityModal} />

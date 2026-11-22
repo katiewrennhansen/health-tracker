@@ -16,7 +16,7 @@ import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { DatePickerField } from "@/ui/DatePickerField";
 import { Button } from "@/ui/Button";
-import { useActivitiesMutation } from "@/queries/useActivitiesMutation";
+import { useActivitiesMutation } from "@/queries/useActivitiesMutations";
 import { today } from "@/utils/utils";
 
 /** Logs a workout: when, what kind, how long and how hard. */

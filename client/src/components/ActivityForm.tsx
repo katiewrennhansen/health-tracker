@@ -19,7 +19,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { parseDate } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
-import { useActivitiesMutation } from "@/queries/useActivitiesMutation";
+import { useActivitiesMutation } from "@/queries/useActivitiesMutations";
 import { Button } from "@/ui/Button";
 
 /** Today in the user's time zone, as YYYY-MM-DD (the "en-CA" locale formats dates that way). */

@@ -1,6 +1,5 @@
 import { type CheckInInput, checkInInputSchema } from "@health-tracker/shared";
 import {
-  Card,
   FieldError,
   Label,
   NumberField,
@@ -12,6 +11,7 @@ import { Controller, useForm } from "react-hook-form";
 import { RatingField } from "@/features/CheckIns/RatingField";
 import { useCheckInsMutation } from "@/queries/useCheckInsMutations";
 import { Button } from "@/ui/Button";
+import { Card } from "@/ui/Card";
 import { useCheckIns } from "@/queries/useCheckIns";
 import { today } from "@/utils/utils";
 import { CheckInBanner } from "./CheckInBanner";
@@ -50,7 +50,7 @@ export function CheckInForm() {
   }
 
   return (
-    <Card className="rounded-sm">
+    <Card>
       <form
         className="flex flex-col gap-4"
         noValidate

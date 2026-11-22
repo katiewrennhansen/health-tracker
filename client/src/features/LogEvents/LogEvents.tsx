@@ -1,5 +1,5 @@
-import { Card, toast } from "@heroui/react";
 import { format } from "date-fns";
+import { Card } from "@/ui/Card";
 import { useState } from "react";
 import { AlcoholForm } from "@/features/LogEvents/AlcoholForm";
 import {
@@ -27,15 +27,15 @@ export function LogEvents() {
         <h1 className="text-3xl font-bold">Log Events</h1>
       </header>
 
-      <Card className="rounded-sm">
-        <Card.Content className="flex flex-col gap-6">
+      <Card>
+        <div className="flex flex-col gap-6">
           <EventTypePicker value={eventType} onChange={setEventType} />
           {eventType === "workout" && <WorkoutForm />}
           {eventType === "alcohol" && <AlcoholForm />}
           {eventType === "illness" && <IllnessForm />}
           {eventType === "injury" && <InjuryForm />}
           {eventType === "travel" && <TravelForm />}
-        </Card.Content>
+        </div>
       </Card>
     </section>
   );
