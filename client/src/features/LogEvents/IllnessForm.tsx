@@ -5,7 +5,14 @@ import {
   illnessInputSchema,
   illnessSymptomSchema,
 } from "@health-tracker/shared";
-import { Alert, FieldError, Label, ListBox, Select } from "@heroui/react";
+import {
+  Alert,
+  FieldError,
+  Label,
+  ListBox,
+  Select,
+  toast,
+} from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -13,6 +20,7 @@ import { type Choice, ChoiceField } from "@/features/LogEvents/ChoiceField";
 import { DatePickerField } from "@/ui/DatePickerField";
 import { Button } from "@/ui/Button";
 import { today } from "@/utils/utils";
+import { useIllnessesMutations } from "@/queries/useIllnessesMutations";
 
 const severityOptions: readonly Choice<IllnessSeverity>[] = [
   { value: "mild", label: "Mild" },
@@ -39,6 +47,7 @@ const defaultValues = {
 
 /** Logs an illness: when it started and ended, how bad it was, and the symptoms. */
 export function IllnessForm() {
+  const { createIllness } = useIllnessesMutations();
   const {
     control,
     handleSubmit,
@@ -49,8 +58,13 @@ export function IllnessForm() {
     defaultValues: defaultValues,
   });
 
-  const onSubmit = (values: IllnessInput) => {
-    console.log(values);
+  const onSubmit = async (values: IllnessInput) => {
+    try {
+      await createIllness.mutateAsync(values);
+      toast.success("Illness created successfully");
+    } catch {
+      toast.danger("Failed to create illness");
+    }
   };
 
   // Clear the form after a successful save (react-hook-form recommends this over resetting inside onSubmit).

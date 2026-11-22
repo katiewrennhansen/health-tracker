@@ -6,6 +6,7 @@ import {
   NumberField,
   TextArea,
   TextField,
+  toast,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
@@ -13,9 +14,11 @@ import { Controller, useForm } from "react-hook-form";
 import { DatePickerField } from "@/ui/DatePickerField";
 import { Button } from "@/ui/Button";
 import { today } from "@/utils/utils";
+import { useTravelMutations } from "@/queries/useTravelMutations";
 
 /** Logs a trip: where, when, and the altitude and time zone change that affect training. */
 export function TravelForm() {
+  const { createTravel } = useTravelMutations();
   const {
     control,
     handleSubmit,
@@ -33,8 +36,13 @@ export function TravelForm() {
     },
   });
 
-  const onSubmit = (values: TravelInput) => {
-    console.log(values);
+  const onSubmit = async (values: TravelInput) => {
+    try {
+      await createTravel.mutateAsync(values);
+      toast.success("Travel created successfully");
+    } catch {
+      toast.danger("Failed to create travel");
+    }
   };
 
   // Clear the form after a successful save (react-hook-form recommends this over resetting inside onSubmit).
