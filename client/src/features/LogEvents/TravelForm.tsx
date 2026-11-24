@@ -1,18 +1,11 @@
 import { type TravelInput, travelInputSchema } from "@health-tracker/shared";
-import {
-  FieldError,
-  Input,
-  Label,
-  TextArea,
-  TextField,
-  toast,
-} from "@heroui/react";
+import { FieldError, Input, Label, TextArea, TextField } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { NumberField } from "@/ui/NumberField";
 import { DatePickerField } from "@/ui/DatePickerField";
-import { Button } from "@/ui/Button";
+import { Alert, Button, toast } from "@/ui";
 import { today } from "@/utils/utils";
 import { useTravelMutations } from "@/queries/useTravelMutations";
 
@@ -23,7 +16,7 @@ export function TravelForm() {
     control,
     handleSubmit,
     reset,
-    formState: { isSubmitting, isSubmitSuccessful },
+    formState: { isSubmitting, isSubmitSuccessful, errors },
   } = useForm<TravelInput>({
     resolver: zodResolver(travelInputSchema),
     defaultValues: {
@@ -39,15 +32,15 @@ export function TravelForm() {
   const onSubmit = async (values: TravelInput) => {
     try {
       await createTravel.mutateAsync(values);
-      toast.success("Travel created successfully");
+      toast.success("Trip saved.");
     } catch {
-      toast.danger("Failed to create travel");
+      toast.danger("Couldn't save the trip. Please try again.");
     }
   };
 
-  // Clear the form after a successful save (react-hook-form recommends this over resetting inside onSubmit).
+  // Clear the form after a successful save, keeping the success flag so the message stays visible.
   useEffect(() => {
-    if (isSubmitSuccessful) reset();
+    if (isSubmitSuccessful) reset(undefined, { keepIsSubmitSuccessful: true });
   }, [isSubmitSuccessful, reset]);
 
   return (
@@ -67,7 +60,7 @@ export function TravelForm() {
             onBlur={field.onBlur}
             isInvalid={!!fieldState.error}
           >
-            <Label>Destination</Label>
+            <Label>Where to?</Label>
             <Input placeholder="e.g. Denver" />
             <FieldError>{fieldState.error?.message}</FieldError>
           </TextField>
@@ -80,8 +73,8 @@ export function TravelForm() {
           name="startDate"
           render={({ field, fieldState }) => (
             <DatePickerField
-              label="Started"
-              calendarLabel="Start date"
+              label="Leaving"
+              calendarLabel="Leaving date"
               name={field.name}
               value={field.value}
               onChange={(value) => field.onChange(value ?? "")}
@@ -97,13 +90,13 @@ export function TravelForm() {
             <DatePickerField
               label={
                 <>
-                  Ended{" "}
+                  Back{" "}
                   <span className="font-normal text-muted">
                     (leave empty if still away)
                   </span>
                 </>
               }
-              calendarLabel="End date"
+              calendarLabel="Return date"
               name={field.name}
               value={field.value}
               onChange={field.onChange}
@@ -149,7 +142,7 @@ export function TravelForm() {
               formatOptions={{ signDisplay: "exceptZero" }}
               label={
                 <>
-                  Time zone change (hours){" "}
+                  Time zone difference (hours){" "}
                   <span className="font-normal text-muted">(optional)</span>
                 </>
               }
@@ -180,7 +173,18 @@ export function TravelForm() {
         )}
       />
 
-      <div className="flex justify-end gap-3">
+      <Alert
+        status="accent"
+        title="What this changes"
+        description="High altitude (above about 1,500 m) and big time zone changes lower readiness for a few days, so the advice eases off while you adjust."
+      />
+
+      <div className="flex flex-wrap items-center justify-end gap-3 border-t border-separator pt-4">
+        {errors.root?.server && (
+          <p role="alert" className="mr-auto text-sm text-danger">
+            {errors.root.server.message}
+          </p>
+        )}
         <Button
           type="submit"
           isDisabled={isSubmitting}

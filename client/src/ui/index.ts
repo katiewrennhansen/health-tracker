@@ -5,3 +5,4 @@ export * from "./Card";
 export * from "./NumberField";
 export * from "./RatingChip";
 export * from "./Modal";
+export { toast } from "@heroui/react";

@@ -16,6 +16,8 @@
    * fixing it here lets `--radius` below be based on it without a loop.
    */
   --radius-sm: 0.5rem; /* 4px */
+  --primary: oklch(37.005% 0.10488 148.841);
+  --white: #fff;
 }
 
 /*
@@ -33,13 +35,11 @@
  */
 
 :root,
-.light,
 .default,
-[data-theme="light"],
 [data-theme="default"] {
   /* Theme Colors (Light Mode) */
-  --accent: oklch(72.27% 0.192 149.58);
-  --accent-foreground: oklch(15% 0.03 149.58);
+  --accent: var(--primary);
+  --accent-foreground: var(--white);
   --background: oklch(97.02% 0.0015 149.58);
   --border: oklch(90% 0.0015 149.58);
   --danger: oklch(65.32% 0.2335 13.23);
@@ -83,41 +83,4 @@
   /* Font Family */
   /* Make sure to load Geist font in your app */
   --font-sans: var(--font-geist);
-}
-
-.dark,
-[data-theme="dark"] {
-  color-scheme: dark;
-  /* Theme Colors (Dark Mode) */
-  --accent: oklch(72.27% 0.192 149.58);
-  --accent-foreground: oklch(15% 0.03 149.58);
-  --background: oklch(12% 0.0015 149.58);
-  --border: oklch(28% 0.0015 149.58);
-  --danger: oklch(59.4% 0.1973 12.12);
-  --danger-foreground: oklch(99.11% 0 0);
-  --default: oklch(27.4% 0.0015 149.58);
-  --default-foreground: oklch(99.11% 0 0);
-  --field-background: oklch(21.03% 0.003 149.58);
-  --field-border: transparent;
-  --field-foreground: oklch(99.11% 0.0015 149.58);
-  --field-placeholder: oklch(70.5% 0.003 149.58);
-  --focus: oklch(72.27% 0.192 149.58);
-  --foreground: oklch(99.11% 0.0015 149.58);
-  --muted: oklch(70.5% 0.003 149.58);
-  --overlay: oklch(21.03% 0.003 149.58);
-  --overlay-foreground: oklch(99.11% 0.0015 149.58);
-  --scrollbar: oklch(70.5% 0.0015 149.58);
-  --segment: oklch(39.64% 0.0015 149.58);
-  --segment-foreground: oklch(99.11% 0.0015 149.58);
-  --separator: oklch(25% 0.0015 149.58);
-  --success: oklch(73.29% 0.1941 138.3);
-  --success-foreground: oklch(21.03% 0.0059 138.3);
-  --surface: oklch(21.03% 0.003 149.58);
-  --surface-foreground: oklch(99.11% 0.0015 149.58);
-  --surface-secondary: oklch(25.7% 0.0023 149.58);
-  --surface-secondary-foreground: oklch(99.11% 0.0015 149.58);
-  --surface-tertiary: oklch(27.21% 0.0023 149.58);
-  --surface-tertiary-foreground: oklch(99.11% 0.0015 149.58);
-  --warning: oklch(82.03% 0.1392 63.83);
-  --warning-foreground: oklch(21.03% 0.0059 63.83);
 }

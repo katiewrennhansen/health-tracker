@@ -1,17 +1,29 @@
 import {
+  type BodyArea,
   type InjuryInput,
-  bodyAreaSchema,
   injuryInputSchema,
 } from "@health-tracker/shared";
-import { FieldError, Label, ListBox, Select, toast } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { NumberField } from "@/ui/NumberField";
-import { DatePickerField } from "@/ui/DatePickerField";
-import { Button } from "@/ui/Button";
-import { today } from "@/utils/utils";
+import { type Choice, ChoiceField } from "@/features/LogEvents/ChoiceField";
+import { ScaleField } from "@/components/ScaleField";
 import { useInjuriesMutations } from "@/queries/useInjuriesMutations";
+import { Alert, Button, toast } from "@/ui";
+import { DatePickerField } from "@/ui/DatePickerField";
+import { today } from "@/utils/utils";
+
+const bodyAreaOptions: readonly Choice<BodyArea>[] = [
+  { value: "neck", label: "Neck" },
+  { value: "shoulder", label: "Shoulder" },
+  { value: "back", label: "Back" },
+  { value: "hip", label: "Hip" },
+  { value: "knee", label: "Knee" },
+  { value: "ankle", label: "Ankle" },
+  { value: "foot", label: "Foot" },
+  { value: "wrist", label: "Wrist" },
+  { value: "other", label: "Other" },
+];
 
 /** Logs an injury: where it is, how bad it is, and when it started (and ended, once healed). */
 export function InjuryForm() {
@@ -20,25 +32,26 @@ export function InjuryForm() {
     control,
     handleSubmit,
     reset,
-    formState: { isSubmitting, isSubmitSuccessful },
+    formState: { isSubmitting, isSubmitSuccessful, errors },
   } = useForm<InjuryInput>({
     resolver: zodResolver(injuryInputSchema),
-    // No body area is picked to start with, so the user has to choose one; the Select shows it as empty.
+    // No body area is picked to start with, so the user has to choose one.
     defaultValues: { startDate: today(), endDate: null, severity: 3 },
   });
 
   const onSubmit = async (values: InjuryInput) => {
     try {
       await createInjury.mutateAsync(values);
-      toast.success("Injury logged successfully");
+      toast.success("Injury saved.");
     } catch {
-      toast.danger("Failed to log injury");
+      // A form error keeps isSubmitSuccessful false, so what the user entered isn't cleared.
+      toast.danger("Couldn't save the injury. Please try again.");
     }
   };
 
-  // Clear the form after a successful save (react-hook-form recommends this over resetting inside onSubmit).
+  // Clear the form after a successful save, keeping the success flag so the message stays visible.
   useEffect(() => {
-    if (isSubmitSuccessful) reset();
+    if (isSubmitSuccessful) reset(undefined, { keepIsSubmitSuccessful: true });
   }, [isSubmitSuccessful, reset]);
 
   return (
@@ -47,6 +60,39 @@ export function InjuryForm() {
       noValidate
       onSubmit={handleSubmit(onSubmit)}
     >
+      <Controller
+        control={control}
+        name="bodyArea"
+        render={({ field, fieldState }) => (
+          <ChoiceField
+            label="Where"
+            options={bodyAreaOptions}
+            value={field.value}
+            onChange={field.onChange}
+            fullWidth={false}
+            errorMessage={fieldState.error?.message}
+          />
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="severity"
+        render={({ field, fieldState }) => (
+          <ScaleField
+            label="Severity"
+            min={1}
+            max={10}
+            value={field.value}
+            onChange={field.onChange}
+            lowLabel="1 · Barely noticeable"
+            highLabel="10 · Can't train"
+            valueText={`${field.value} / 10`}
+            errorMessage={fieldState.error?.message}
+          />
+        )}
+      />
+
       <div className="grid gap-4 sm:grid-cols-2">
         <Controller
           control={control}
@@ -87,61 +133,18 @@ export function InjuryForm() {
         />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Controller
-          control={control}
-          name="bodyArea"
-          render={({ field, fieldState }) => (
-            <Select
-              name={field.name}
-              // `null` (not undefined) keeps the Select controlled while nothing is picked.
-              value={field.value ?? null}
-              onChange={(key) => {
-                const area = bodyAreaSchema.options.find((a) => a === key);
-                if (area) field.onChange(area);
-              }}
-              onBlur={field.onBlur}
-              isInvalid={!!fieldState.error}
-              placeholder="Choose a body area"
-            >
-              <Label>Body area</Label>
-              <Select.Trigger>
-                <Select.Value />
-                <Select.Indicator />
-              </Select.Trigger>
-              <Select.Popover>
-                <ListBox>
-                  {bodyAreaSchema.options.map((area) => (
-                    <ListBox.Item key={area} id={area} textValue={area}>
-                      <span className="capitalize">{area}</span>
-                      <ListBox.ItemIndicator />
-                    </ListBox.Item>
-                  ))}
-                </ListBox>
-              </Select.Popover>
-              <FieldError>{fieldState.error?.message}</FieldError>
-            </Select>
-          )}
-        />
-        <Controller
-          control={control}
-          name="severity"
-          render={({ field, fieldState }) => (
-            <NumberField
-              name={field.name}
-              value={field.value}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-              minValue={1}
-              maxValue={10}
-              label="Severity (1–10)"
-              errorMessage={fieldState.error?.message}
-            />
-          )}
-        />
-      </div>
+      <Alert
+        status="accent"
+        title="What this changes"
+        description="While an injury is active, the advice avoids high-impact sessions such as running and jumping."
+      />
 
-      <div className="flex justify-end gap-3">
+      <div className="flex flex-wrap items-center justify-end gap-3 border-t border-separator pt-4">
+        {errors.root?.server && (
+          <p role="alert" className="mr-auto text-sm text-danger">
+            {errors.root.server.message}
+          </p>
+        )}
         <Button
           type="submit"
           isDisabled={isSubmitting}

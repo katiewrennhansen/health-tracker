@@ -14,6 +14,8 @@ type NumberFieldProps = Omit<
   errorMessage?: string;
   labelClassName?: string;
   groupClassName?: string;
+  /** Classes for the number box itself, e.g. "text-center". */
+  inputClassName?: string;
 };
 
 /**
@@ -25,6 +27,7 @@ export function NumberField({
   errorMessage,
   labelClassName,
   groupClassName,
+  inputClassName,
   // Keep out-of-range values (instead of clamping) so the form's validation shows the error.
   commitBehavior = "validate",
   ...props
@@ -38,7 +41,7 @@ export function NumberField({
       <Label className={labelClassName}>{label}</Label>
       <HeroNumberField.Group className={groupClassName}>
         <HeroNumberField.DecrementButton />
-        <HeroNumberField.Input />
+        <HeroNumberField.Input className={inputClassName} />
         <HeroNumberField.IncrementButton />
       </HeroNumberField.Group>
       <FieldError>{errorMessage}</FieldError>

@@ -5,27 +5,20 @@ import {
   illnessInputSchema,
   illnessSymptomSchema,
 } from "@health-tracker/shared";
-import {
-  Alert,
-  FieldError,
-  Label,
-  ListBox,
-  Select,
-  toast,
-} from "@heroui/react";
+import { FieldError, Label, ListBox, Select } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { type Choice, ChoiceField } from "@/features/LogEvents/ChoiceField";
-import { DatePickerField } from "@/ui/DatePickerField";
-import { Button } from "@/ui/Button";
-import { today } from "@/utils/utils";
+import { Alert, Button, toast } from "@/ui";
 import { useIllnessesMutations } from "@/queries/useIllnessesMutations";
+import { DatePickerField } from "@/ui/DatePickerField";
+import { today } from "@/utils/utils";
+import { ChoiceField } from "@/features/LogEvents/ChoiceField";
 
 const severityOptions: readonly Choice<IllnessSeverity>[] = [
-  { value: "mild", label: "Mild" },
-  { value: "moderate", label: "Moderate" },
-  { value: "severe", label: "Severe" },
+  { value: "mild", label: "Mild", description: "Can do daily things" },
+  { value: "moderate", label: "Moderate", description: "Slowed down" },
+  { value: "severe", label: "Severe", description: "Mostly resting" },
 ];
 
 const symptomLabels: Record<IllnessSymptom, string> = {
@@ -38,38 +31,38 @@ const symptomLabels: Record<IllnessSymptom, string> = {
   other: "Other",
 };
 
-const defaultValues = {
+const defaultValues: IllnessInput = {
   startDate: today(),
   endDate: null,
-  severity: "mild" as IllnessSeverity,
-  symptoms: [] as IllnessSymptom[],
+  severity: "mild",
+  symptoms: [],
 };
 
-/** Logs an illness: when it started and ended, how bad it was, and the symptoms. */
+/** Logs an illness: when it started and ended, how bad it is, and the symptoms. */
 export function IllnessForm() {
   const { createIllness } = useIllnessesMutations();
   const {
     control,
     handleSubmit,
     reset,
-    formState: { isSubmitting, isSubmitSuccessful },
+    formState: { isSubmitting, isSubmitSuccessful, errors },
   } = useForm<IllnessInput>({
     resolver: zodResolver(illnessInputSchema),
-    defaultValues: defaultValues,
+    defaultValues,
   });
 
   const onSubmit = async (values: IllnessInput) => {
     try {
       await createIllness.mutateAsync(values);
-      toast.success("Illness created successfully");
+      toast.success("Illness saved.");
     } catch {
-      toast.danger("Failed to create illness");
+      toast.danger("Couldn't save the illness. Please try again.");
     }
   };
 
-  // Clear the form after a successful save (react-hook-form recommends this over resetting inside onSubmit).
+  // Clear the form after a successful save, keeping the success flag so the message stays visible.
   useEffect(() => {
-    if (isSubmitSuccessful) reset();
+    if (isSubmitSuccessful) reset(undefined, { keepIsSubmitSuccessful: true });
   }, [isSubmitSuccessful, reset]);
 
   return (
@@ -118,74 +111,76 @@ export function IllnessForm() {
         />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Controller
-          control={control}
-          name="severity"
-          render={({ field }) => (
-            <ChoiceField
-              label="Severity"
-              options={severityOptions}
-              value={field.value}
-              onChange={field.onChange}
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="symptoms"
-          render={({ field, fieldState }) => (
-            <Select
-              selectionMode="multiple"
-              name={field.name}
-              value={field.value}
-              // Rebuild the list from the known symptoms, so the form only ever holds valid values.
-              onChange={(keys) =>
-                field.onChange(
-                  illnessSymptomSchema.options.filter((symptom) =>
-                    keys.includes(symptom),
-                  ),
-                )
-              }
-              onBlur={field.onBlur}
-              isInvalid={!!fieldState.error}
-              placeholder="Choose symptoms"
-            >
-              <Label>Symptoms</Label>
-              <Select.Trigger>
-                <Select.Value />
-                <Select.Indicator />
-              </Select.Trigger>
-              <Select.Popover>
-                <ListBox>
-                  {illnessSymptomSchema.options.map((symptom) => (
-                    <ListBox.Item
-                      key={symptom}
-                      id={symptom}
-                      textValue={symptomLabels[symptom]}
-                    >
-                      {symptomLabels[symptom]}
-                      <ListBox.ItemIndicator />
-                    </ListBox.Item>
-                  ))}
-                </ListBox>
-              </Select.Popover>
-              <FieldError>{fieldState.error?.message}</FieldError>
-            </Select>
-          )}
-        />
-      </div>
+      <Controller
+        control={control}
+        name="severity"
+        render={({ field, fieldState }) => (
+          <ChoiceField
+            label="Severity"
+            options={severityOptions}
+            value={field.value}
+            onChange={field.onChange}
+            errorMessage={fieldState.error?.message}
+          />
+        )}
+      />
 
-      <Alert status="warning">
-        <Alert.Content>
-          <Alert.Description>
-            Fever or chest symptoms (cough, shortness of breath) set today's
-            advice to rest until they clear.
-          </Alert.Description>
-        </Alert.Content>
-      </Alert>
+      <Controller
+        control={control}
+        name="symptoms"
+        render={({ field, fieldState }) => (
+          <Select
+            selectionMode="multiple"
+            name={field.name}
+            value={field.value}
+            // Rebuild the list from the known symptoms, so the form only ever holds valid values.
+            onChange={(keys) =>
+              field.onChange(
+                illnessSymptomSchema.options.filter((symptom) =>
+                  keys.includes(symptom),
+                ),
+              )
+            }
+            onBlur={field.onBlur}
+            isInvalid={!!fieldState.error}
+            placeholder="Choose symptoms"
+          >
+            <Label>Symptoms</Label>
+            <Select.Trigger>
+              <Select.Value />
+              <Select.Indicator />
+            </Select.Trigger>
+            <Select.Popover>
+              <ListBox>
+                {illnessSymptomSchema.options.map((symptom) => (
+                  <ListBox.Item
+                    key={symptom}
+                    id={symptom}
+                    textValue={symptomLabels[symptom]}
+                  >
+                    {symptomLabels[symptom]}
+                    <ListBox.ItemIndicator />
+                  </ListBox.Item>
+                ))}
+              </ListBox>
+            </Select.Popover>
+            <FieldError>{fieldState.error?.message}</FieldError>
+          </Select>
+        )}
+      />
 
-      <div className="flex justify-end gap-3">
+      <Alert
+        status="accent"
+        title="What this changes"
+        description="Fever or chest symptoms (cough, shortness of breath) set today's advice to rest until they clear."
+      />
+
+      <div className="flex flex-wrap items-center justify-end gap-3 border-t border-separator pt-4">
+        {errors.root?.server && (
+          <p role="alert" className="mr-auto text-sm text-danger">
+            {errors.root.server.message}
+          </p>
+        )}
         <Button
           type="submit"
           isDisabled={isSubmitting}

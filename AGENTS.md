@@ -77,6 +77,7 @@ When adding or changing front-end components, follow the rough design in [docs/d
 - **Choices.** Pick-one options are segmented buttons or pills with the selected one filled black (1–5 ratings, workout type, severity, History filters). Larger options with an icon and a description are selectable cards (event type). Use a slider for effort, showing the value and its label ("7 / 10 · Hard").
 - **Status colours.** Accent blue marks the current or selected item. Warm orange (`warning-soft`) marks active injuries or illnesses and rest warnings. Kinds in tables are small soft chips (Workout, Check-in, Alcohol, Injury, ...).
 - **Text.** Labels in sentence case, short muted helper text under controls and cards (for example "Load = duration × effort for each session."), and the "not medical advice" note on Today.
+- use hero ui toast for disaplaying error and success messages after form submission on the front end
 
 ## Working style
 

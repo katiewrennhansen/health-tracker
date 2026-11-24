@@ -42,7 +42,11 @@ export function Alert({
           </span>
         ) : undefined}
       </HeroAlert.Indicator>
-      <HeroAlert.Content>
+      {/*
+       * `basis-0` makes long text wrap inside this block instead of the whole block wrapping onto a
+       * new line under the icon; `min-w-48` still lets it drop below when there's really no room.
+       */}
+      <HeroAlert.Content className="min-w-48 basis-0">
         <HeroAlert.Title>{title}</HeroAlert.Title>
         {description && (
           <HeroAlert.Description>{description}</HeroAlert.Description>
