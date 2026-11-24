@@ -45,7 +45,7 @@ export function IllnessForm() {
     control,
     handleSubmit,
     reset,
-    formState: { isSubmitting, isSubmitSuccessful, errors },
+    formState: { isSubmitting, isSubmitSuccessful },
   } = useForm<IllnessInput>({
     resolver: zodResolver(illnessInputSchema),
     defaultValues,
@@ -62,7 +62,7 @@ export function IllnessForm() {
 
   // Clear the form after a successful save, keeping the success flag so the message stays visible.
   useEffect(() => {
-    if (isSubmitSuccessful) reset(undefined, { keepIsSubmitSuccessful: true });
+    if (isSubmitSuccessful) reset();
   }, [isSubmitSuccessful, reset]);
 
   return (
