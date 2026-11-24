@@ -1,22 +1,15 @@
 import { Spinner } from "@heroui/react";
-import { ActivityModal } from "@/components/ActivityModal";
+import { CheckInModal } from "@/features/Today/CheckInModal";
+import { CheckInReminder } from "@/features/Today/CheckInReminder";
 import { TrainingLoadChart } from "@/features/Today/TrainingLoadChart";
 import { useActivities } from "@/queries/useActivities";
-import { Button } from "@/ui/Button";
-import { PlusIcon } from "@heroicons/react/24/solid";
+import { useTodayCheckIn } from "@/queries/useTodayCheckIn";
 import { useState } from "react";
 
 export function Today() {
-  const [activityModalOpen, setActivityModalOpen] = useState(false);
+  const [checkInModalOpen, setCheckInModalOpen] = useState(false);
   const { data: activities = [], isPending, error } = useActivities();
-
-  const handleAddActivityClick = () => {
-    setActivityModalOpen(true);
-  };
-
-  const handleCloseActivityModal = () => {
-    setActivityModalOpen(false);
-  };
+  const { checkedInToday } = useTodayCheckIn();
 
   return (
     <section className="flex flex-col gap-2">
@@ -26,16 +19,9 @@ export function Today() {
         here.
       </p>
 
-      <div className="self-end">
-        <Button
-          type="submit"
-          className="self-start"
-          icon={<PlusIcon />}
-          onPress={handleAddActivityClick}
-        >
-          Add activity
-        </Button>
-      </div>
+      {!checkedInToday && (
+        <CheckInReminder onStartCheckIn={() => setCheckInModalOpen(true)} />
+      )}
 
       {isPending && <Spinner />}
       {error && (
@@ -43,8 +29,8 @@ export function Today() {
       )}
       {!isPending && !error && <TrainingLoadChart activities={activities} />}
 
-      {activityModalOpen && (
-        <ActivityModal onClose={handleCloseActivityModal} />
+      {checkInModalOpen && (
+        <CheckInModal onClose={() => setCheckInModalOpen(false)} />
       )}
     </section>
   );

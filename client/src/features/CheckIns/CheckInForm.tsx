@@ -6,7 +6,7 @@ import { NumberField } from "@/ui/NumberField";
 import { RatingField } from "@/features/CheckIns/RatingField";
 import { useCheckInsMutation } from "@/queries/useCheckInsMutations";
 import { Button, Card } from "@/ui";
-import { useCheckIns } from "@/queries/useCheckIns";
+import { useTodayCheckIn } from "@/queries/useTodayCheckIn";
 import { today } from "@/utils/utils";
 import { CheckInBanner } from "./CheckInBanner";
 
@@ -19,10 +19,14 @@ const defaultValues: CheckInInput = {
   stress: 3,
 };
 
+type CheckInFormProps = {
+  /** Called after the check-in is saved, e.g. to close the modal it's shown in. */
+  onSaved?: () => void;
+};
+
 /** Today's morning check-in: hours slept plus 1–5 ratings for soreness, mood and energy. */
-export function CheckInForm() {
-  const { data: checkIns } = useCheckIns();
-  const todayCheckIn = checkIns?.find((c) => c.date === today());
+export function CheckInForm({ onSaved }: CheckInFormProps) {
+  const { checkedInToday } = useTodayCheckIn();
   const { createCheckin } = useCheckInsMutation();
   const { control, handleSubmit, reset } = useForm<CheckInInput>({
     resolver: zodResolver(checkInInputSchema),
@@ -34,12 +38,13 @@ export function CheckInForm() {
       await createCheckin.mutateAsync({ ...values, date: today() });
       toast.success("Check-in saved");
       reset(defaultValues);
+      onSaved?.();
     } catch {
       toast.danger("Couldn't save the check-in");
     }
   };
 
-  if (todayCheckIn) {
+  if (checkedInToday) {
     return <CheckInBanner />;
   }
 
@@ -75,67 +80,65 @@ export function CheckInForm() {
 
         <Separator />
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Controller
-            control={control}
-            name="soreness"
-            render={({ field }) => (
-              <RatingField
-                label="Muscle soreness"
-                value={field.value}
-                onChange={field.onChange}
-                lowLabel="None"
-                highLabel="Very sore"
-              />
-            )}
-          />
-          <Controller
-            control={control}
-            name="mood"
-            render={({ field }) => (
-              <RatingField
-                label="Mood"
-                value={field.value}
-                onChange={field.onChange}
-                lowLabel="Low"
-                highLabel="Great"
-              />
-            )}
-          />
-          <Controller
-            control={control}
-            name="energy"
-            render={({ field }) => (
-              <RatingField
-                label="Energy"
-                value={field.value}
-                onChange={field.onChange}
-                lowLabel="Drained"
-                highLabel="Full of energy"
-              />
-            )}
-          />
-          <Controller
-            control={control}
-            name="stress"
-            render={({ field }) => (
-              <RatingField
-                label="Stress"
-                value={field.value}
-                onChange={field.onChange}
-                lowLabel="Low"
-                highLabel="High"
-              />
-            )}
-          />
-        </div>
+        <Controller
+          control={control}
+          name="soreness"
+          render={({ field }) => (
+            <RatingField
+              label="Muscle soreness"
+              value={field.value}
+              onChange={field.onChange}
+              lowLabel="None"
+              highLabel="Very sore"
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="mood"
+          render={({ field }) => (
+            <RatingField
+              label="Mood"
+              value={field.value}
+              onChange={field.onChange}
+              lowLabel="Low"
+              highLabel="Great"
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="energy"
+          render={({ field }) => (
+            <RatingField
+              label="Energy"
+              value={field.value}
+              onChange={field.onChange}
+              lowLabel="Drained"
+              highLabel="Full of energy"
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="stress"
+          render={({ field }) => (
+            <RatingField
+              label="Stress"
+              value={field.value}
+              onChange={field.onChange}
+              lowLabel="Low"
+              highLabel="High"
+            />
+          )}
+        />
 
         <Separator />
 
         <div className="flex justify-end">
           <Button
             type="submit"
-            isDisabled={createCheckin.isPending || !!todayCheckIn}
+            isDisabled={createCheckin.isPending || checkedInToday}
             isLoading={createCheckin.isPending}
           >
             Save check-in
