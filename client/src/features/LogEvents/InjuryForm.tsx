@@ -32,7 +32,7 @@ export function InjuryForm() {
     control,
     handleSubmit,
     reset,
-    formState: { isSubmitting, isSubmitSuccessful, errors },
+    formState: { isSubmitting, isSubmitSuccessful },
   } = useForm<InjuryInput>({
     resolver: zodResolver(injuryInputSchema),
     // No body area is picked to start with, so the user has to choose one.
@@ -51,7 +51,7 @@ export function InjuryForm() {
 
   // Clear the form after a successful save, keeping the success flag so the message stays visible.
   useEffect(() => {
-    if (isSubmitSuccessful) reset(undefined, { keepIsSubmitSuccessful: true });
+    if (isSubmitSuccessful) reset();
   }, [isSubmitSuccessful, reset]);
 
   return (
@@ -139,12 +139,7 @@ export function InjuryForm() {
         description="While an injury is active, the advice avoids high-impact sessions such as running and jumping."
       />
 
-      <div className="flex flex-wrap items-center justify-end gap-3 border-t border-separator pt-4">
-        {errors.root?.server && (
-          <p role="alert" className="mr-auto text-sm text-danger">
-            {errors.root.server.message}
-          </p>
-        )}
+      <div className="flex justify-end">
         <Button
           type="submit"
           isDisabled={isSubmitting}

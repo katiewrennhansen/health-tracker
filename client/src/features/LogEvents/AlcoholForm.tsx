@@ -24,7 +24,7 @@ export function AlcoholForm() {
     control,
     handleSubmit,
     reset,
-    formState: { isSubmitting, isSubmitSuccessful, errors },
+    formState: { isSubmitting, isSubmitSuccessful },
   } = useForm<AlcoholInput>({
     resolver: zodResolver(alcoholInputSchema),
     defaultValues: { date: today(), drinks: 0 },
@@ -41,7 +41,7 @@ export function AlcoholForm() {
 
   // Clear the form after a successful save, keeping the success flag so the message stays visible.
   useEffect(() => {
-    if (isSubmitSuccessful) reset(undefined, { keepIsSubmitSuccessful: true });
+    if (isSubmitSuccessful) reset();
   }, [isSubmitSuccessful, reset]);
 
   return (
@@ -115,18 +115,13 @@ export function AlcoholForm() {
         description="Drinks lower the next day's readiness, so the advice leans easier."
       />
 
-      <div className="flex flex-wrap items-center justify-end gap-3 border-t border-separator pt-4">
-        {errors.root?.server && (
-          <p role="alert" className="mr-auto text-sm text-danger">
-            {errors.root.server.message}
-          </p>
-        )}
+      <div className="flex  justify-end">
         <Button
           type="submit"
           isDisabled={isSubmitting}
           isLoading={isSubmitting}
         >
-          Save
+          Save drinks
         </Button>
       </div>
     </form>

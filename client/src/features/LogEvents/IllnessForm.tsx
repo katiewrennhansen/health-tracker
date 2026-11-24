@@ -13,7 +13,7 @@ import { Alert, Button, toast } from "@/ui";
 import { useIllnessesMutations } from "@/queries/useIllnessesMutations";
 import { DatePickerField } from "@/ui/DatePickerField";
 import { today } from "@/utils/utils";
-import { ChoiceField } from "@/features/LogEvents/ChoiceField";
+import { type Choice, ChoiceField } from "@/features/LogEvents/ChoiceField";
 
 const severityOptions: readonly Choice<IllnessSeverity>[] = [
   { value: "mild", label: "Mild", description: "Can do daily things" },
@@ -175,12 +175,7 @@ export function IllnessForm() {
         description="Fever or chest symptoms (cough, shortness of breath) set today's advice to rest until they clear."
       />
 
-      <div className="flex flex-wrap items-center justify-end gap-3 border-t border-separator pt-4">
-        {errors.root?.server && (
-          <p role="alert" className="mr-auto text-sm text-danger">
-            {errors.root.server.message}
-          </p>
-        )}
+      <div className="flex justify-end">
         <Button
           type="submit"
           isDisabled={isSubmitting}

@@ -16,7 +16,7 @@ export function TravelForm() {
     control,
     handleSubmit,
     reset,
-    formState: { isSubmitting, isSubmitSuccessful, errors },
+    formState: { isSubmitting, isSubmitSuccessful },
   } = useForm<TravelInput>({
     resolver: zodResolver(travelInputSchema),
     defaultValues: {
@@ -40,7 +40,7 @@ export function TravelForm() {
 
   // Clear the form after a successful save, keeping the success flag so the message stays visible.
   useEffect(() => {
-    if (isSubmitSuccessful) reset(undefined, { keepIsSubmitSuccessful: true });
+    if (isSubmitSuccessful) reset();
   }, [isSubmitSuccessful, reset]);
 
   return (
@@ -179,12 +179,7 @@ export function TravelForm() {
         description="High altitude (above about 1,500 m) and big time zone changes lower readiness for a few days, so the advice eases off while you adjust."
       />
 
-      <div className="flex flex-wrap items-center justify-end gap-3 border-t border-separator pt-4">
-        {errors.root?.server && (
-          <p role="alert" className="mr-auto text-sm text-danger">
-            {errors.root.server.message}
-          </p>
-        )}
+      <div className="flex justify-end">
         <Button
           type="submit"
           isDisabled={isSubmitting}

@@ -30,14 +30,14 @@ const durationOptions: readonly Choice<string>[] = [
 ].map((minutes) => ({ value: String(minutes), label: String(minutes) }));
 
 /** Word for an effort score, e.g. 7 → "Hard". */
-function effortWord(effort: number) {
+const effortWord = (effort: number) => {
   if (effort <= 2) return "Very easy";
   if (effort <= 4) return "Easy";
   if (effort <= 6) return "Moderate";
   if (effort <= 8) return "Hard";
   if (effort === 9) return "Very hard";
   return "All out";
-}
+};
 
 /** Logs a workout: what kind, when, how long and how hard. */
 export function WorkoutForm() {
@@ -46,7 +46,7 @@ export function WorkoutForm() {
     control,
     handleSubmit,
     reset,
-    formState: { isSubmitting, isSubmitSuccessful, errors },
+    formState: { isSubmitting, isSubmitSuccessful },
   } = useForm<ActivityInput>({
     resolver: zodResolver(activityInputSchema),
     defaultValues: {
@@ -73,7 +73,7 @@ export function WorkoutForm() {
 
   // Clear the form after a successful save, keeping the success flag so the message stays visible.
   useEffect(() => {
-    if (isSubmitSuccessful) reset(undefined, { keepIsSubmitSuccessful: true });
+    if (isSubmitSuccessful) reset();
   }, [isSubmitSuccessful, reset]);
 
   return (
@@ -178,12 +178,7 @@ export function WorkoutForm() {
         }
       />
 
-      <div className="flex flex-wrap items-center justify-end gap-3 border-t border-separator pt-4">
-        {errors.root?.server && (
-          <p role="alert" className="mr-auto text-sm text-danger">
-            {errors.root.server.message}
-          </p>
-        )}
+      <div className="flex justify-end">
         <Button
           type="submit"
           isDisabled={isSubmitting}
